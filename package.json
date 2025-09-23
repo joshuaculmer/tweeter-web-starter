@@ -7,6 +7,12 @@
   ],
   "author": "JWilkerson",
   "license": "ISC",
+  "scripts": {
+    "start": "cd ./tweeter-web/ && vite",
+    "build": "cd ./tweeter-web/ && tsc && vite build",
+    "serve": "cd ./tweeter-web/ && vite preview",
+    "reload": "cd ./tweeter-web/ && npm run build && npm run serve"
+  },
   "dependencies": {
     "rimraf": "^5.0.5",
     "vite-plugin-dts": "^3.7.3"
