@@ -7,7 +7,7 @@ import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ToastActionsContext } from "../toaster/ToastContexts";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ToastType } from "../toaster/Toast";
 import StatusItem from "../statusItem/StatusItem";
 
@@ -106,7 +106,7 @@ const StoryScroller = () => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <StatusItem item={item}></StatusItem>
+            <StatusItem item={item} featurePath="/story"></StatusItem>
           </div>
         ))}
       </InfiniteScroll>

@@ -14,6 +14,7 @@ export const PAGE_SIZE = 10;
 
 interface Props {
   item: Status;
+  featurePath: string;
 }
 
 const StatusItem = (props: Props) => {
@@ -34,7 +35,7 @@ const StatusItem = (props: Props) => {
       if (toUser) {
         if (!toUser.equals(displayedUser!)) {
           setDisplayedUser(toUser);
-          navigate(`/story/${toUser.alias}`);
+          navigate(`${props.featurePath}/${toUser.alias}`);
         }
       }
     } catch (error) {

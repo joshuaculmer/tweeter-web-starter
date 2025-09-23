@@ -7,7 +7,7 @@ import { AuthToken, FakeData, Status, User } from "tweeter-shared";
 import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ToastActionsContext } from "../toaster/ToastContexts";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { ToastType } from "../toaster/Toast";
 import Post from "../statusItem/Post";
 import StatusItem from "../statusItem/StatusItem";
@@ -107,7 +107,7 @@ const FeedScroller = () => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <StatusItem item={item}></StatusItem>
+            <StatusItem item={item} featurePath="/feed"></StatusItem>
           </div>
         ))}
       </InfiniteScroll>
