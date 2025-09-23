@@ -1,4 +1,3 @@
-import InfiniteScroll from "react-infinite-scroll-component";
 import Post from "./Post";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthToken, Status, FakeData, User } from "tweeter-shared";
@@ -7,8 +6,7 @@ import {
   UserInfoActionsContext,
   UserInfoContext,
 } from "../userInfo/UserInfoContexts";
-import { ToastActionsContext } from "../toaster/ToastContexts";
-import { ToastType } from "../toaster/Toast";
+import { useMessageActions } from "../toaster/messagehooks";
 
 export const PAGE_SIZE = 10;
 
@@ -18,7 +16,7 @@ interface Props {
 }
 
 const StatusItem = (props: Props) => {
-  const { displayToast } = useContext(ToastActionsContext);
+  const { displayErrorMessage } = useMessageActions();
   const item = props.item;
   const { displayedUser, authToken } = useContext(UserInfoContext);
   const navigate = useNavigate();
@@ -39,11 +37,7 @@ const StatusItem = (props: Props) => {
         }
       }
     } catch (error) {
-      displayToast(
-        ToastType.Error,
-        `Failed to get user because of exception: ${error}`,
-        0
-      );
+      displayErrorMessage(`Failed to get user because of exception: ${error}`);
     }
   };
 

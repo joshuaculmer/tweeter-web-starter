@@ -1,25 +1,17 @@
 import { OverlayTrigger, OverlayTriggerProps, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useContext } from "react";
-import { ToastActionsContext } from "../toaster/ToastContexts";
-import { ToastType } from "../toaster/Toast";
 import { IconName } from "@fortawesome/fontawesome-common-types";
+import { useMessageActions } from "../toaster/messagehooks";
 
 interface Props {
   iconName: IconName;
 }
 
 const OAuth = (props: Props) => {
-  const { displayToast } = useContext(ToastActionsContext);
+  const { displayInfoMessage } = useMessageActions();
 
   const displayInfoMessageWithDarkBackground = (message: string): void => {
-    displayToast(
-      ToastType.Info,
-      message,
-      3000,
-      undefined,
-      "text-white bg-primary"
-    );
+    displayInfoMessage(message, 3000, "text-white bg-primary");
   };
 
   const formatTooltip = (input: string) => {
