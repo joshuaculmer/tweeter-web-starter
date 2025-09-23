@@ -1,4 +1,4 @@
-import { Context, createContext } from "react";
+import { Context, createContext, useContext } from "react";
 import { User, AuthToken } from "tweeter-shared";
 import { UserInfo } from "./UserInfo";
 
@@ -10,17 +10,24 @@ interface UserInfoActions {
     displayedUser: User | null,
     authToken: AuthToken,
     remember: boolean
-  ) => void,
-  clearUserInfo: () => void,
-  setDisplayedUser: (user: User) => void,
+  ) => void;
+  clearUserInfo: () => void;
+  setDisplayedUser: (user: User) => void;
 }
 
 const defaultUserInfoActions: UserInfoActions = {
   updateUserInfo: () => null,
   clearUserInfo: () => null,
   setDisplayedUser: () => null,
-}
-
+};
 
 export const UserInfoActionsContext: Context<UserInfoActions> =
   createContext<UserInfoActions>(defaultUserInfoActions);
+
+export const useUserInfoActions = () => {
+  return useContext(UserInfoActionsContext);
+};
+
+export const useUserInfo = () => {
+  return useContext(UserInfoContext);
+};

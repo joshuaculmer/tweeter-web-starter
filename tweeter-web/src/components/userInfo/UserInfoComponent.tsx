@@ -1,6 +1,5 @@
 import "./UserInfoComponent.css";
-import { useContext } from "react";
-import { UserInfoContext, UserInfoActionsContext } from "./UserInfoContexts";
+import { useUserInfoActions, useUserInfo } from "./UserInfoContexts";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthToken, FakeData, User } from "tweeter-shared";
@@ -15,8 +14,8 @@ const UserInfo = () => {
   const { deleteMessage, displayErrorMessage, displayInfoMessage } =
     useMessageActions();
 
-  const { currentUser, authToken, displayedUser } = useContext(UserInfoContext);
-  const { setDisplayedUser } = useContext(UserInfoActionsContext);
+  const { currentUser, authToken, displayedUser } = useUserInfo();
+  const { setDisplayedUser } = useUserInfoActions();
   const navigate = useNavigate();
   const location = useLocation();
 
