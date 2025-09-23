@@ -74,6 +74,7 @@ const AuthenticatedRoutes = () => {
           path="followees/:displayedUser"
           element={
             <UserItemScroller
+              key={`followees-${displayedUser?.alias}`}
               itemDescription="followees"
               featureUrl="/followees"
               loadMore={loadMoreFollowees}
@@ -84,6 +85,7 @@ const AuthenticatedRoutes = () => {
           path="followers/:displayedUser"
           element={
             <UserItemScroller
+              key={`followers-${displayedUser?.alias}`}
               itemDescription="followers"
               featureUrl="/followers"
               loadMore={loadMoreFollowers}
