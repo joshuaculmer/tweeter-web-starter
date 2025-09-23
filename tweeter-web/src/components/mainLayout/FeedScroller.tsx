@@ -131,7 +131,14 @@ const FeedScroller = () => {
         hasMore={hasMoreItems}
         loader={<h4>Loading...</h4>}
       >
-        <StatusItem items={items}></StatusItem>
+        {items.map((item, index) => (
+          <div
+            key={index}
+            className="row mb-3 mx-0 px-0 border rounded bg-white"
+          >
+            <StatusItem item={item}></StatusItem>
+          </div>
+        ))}
       </InfiniteScroll>
     </div>
   );
