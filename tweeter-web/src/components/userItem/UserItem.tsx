@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { User } from "tweeter-shared";
-import { useNavigateToUser } from "../userInfo/useNavigateToUser";
+import { useNavigateToUser } from "../../model.presenter/useNavigateToUser";
 
 interface Props {
   user: User;
@@ -42,4 +42,3 @@ const UserItem = (props: Props) => {
 };
 
 export default UserItem;
-

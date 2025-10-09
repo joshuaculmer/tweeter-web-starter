@@ -4,9 +4,10 @@ import { useUserInfoActions } from "../../userInfo/UserInfoContexts";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/messagehooks";
+import { AuthService } from "../../../model.service/AuthService";
 
 interface Props {
   originalUrl?: string;
@@ -58,14 +59,8 @@ const Login = (props: Props) => {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> => {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
-    }
-
-    return [user, FakeData.instance.authToken];
+    // TODO replace service call with presenter call
+    return new AuthService().login(alias, password);
   };
 
   const inputFieldFactory = () => {
@@ -102,4 +97,3 @@ const Login = (props: Props) => {
 };
 
 export default Login;
-

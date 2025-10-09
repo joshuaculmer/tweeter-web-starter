@@ -1,7 +1,7 @@
 import Post from "./Post";
 import { Link } from "react-router-dom";
 import { Status } from "tweeter-shared";
-import { useNavigateToUser } from "../userInfo/useNavigateToUser";
+import { useNavigateToUser } from "../../model.presenter/useNavigateToUser";
 
 export const PAGE_SIZE = 10;
 

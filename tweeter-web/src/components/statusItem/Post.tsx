@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Status, Type } from "tweeter-shared";
-import { useNavigateToUser } from "../userInfo/useNavigateToUser";
+import { useNavigateToUser } from "../../model.presenter/useNavigateToUser";
 
 interface Props {
   status: Status;
@@ -40,4 +40,3 @@ const Post = (props: Props) => {
 };
 
 export default Post;
-

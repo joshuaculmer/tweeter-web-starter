@@ -4,10 +4,11 @@ import { useUserInfoActions } from "../../userInfo/UserInfoContexts";
 import { ChangeEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/messagehooks";
+import { AuthService } from "../../../model.service/AuthService";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -114,18 +115,15 @@ const Register = () => {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> => {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
-
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user, FakeData.instance.authToken];
+    // TODO replace service call with presenter
+    return new AuthService().register(
+      firstName,
+      lastName,
+      alias,
+      password,
+      userImageBytes,
+      imageFileExtension
+    );
   };
 
   const inputFieldFactory = () => {
@@ -203,4 +201,3 @@ const Register = () => {
 };
 
 export default Register;
-

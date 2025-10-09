@@ -2,8 +2,9 @@ import "./UserInfoComponent.css";
 import { useUserInfoActions, useUserInfo } from "./UserInfoContexts";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { useMessageActions } from "../toaster/messagehooks";
+import { UserInfoPresenter } from "../../model.presenter/UserInfoPresenter";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -18,6 +19,8 @@ const UserInfo = () => {
   const { setDisplayedUser } = useUserInfoActions();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const presenter: UserInfoPresenter = new UserInfoPresenter();
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
@@ -54,8 +57,7 @@ const UserInfo = () => {
     user: User,
     selectedUser: User
   ): Promise<boolean> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    return presenter.getIsFollowerStatus(authToken, user, selectedUser);
   };
 
   const setNumbFollowees = async (
@@ -75,8 +77,7 @@ const UserInfo = () => {
     authToken: AuthToken,
     user: User
   ): Promise<number> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFolloweeCount(user.alias);
+    return presenter.getFolloweeCount(authToken, user);
   };
 
   const setNumbFollowers = async (
@@ -96,8 +97,7 @@ const UserInfo = () => {
     authToken: AuthToken,
     user: User
   ): Promise<number> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getFollowerCount(user.alias);
+    return presenter.getFollowerCount(authToken, user);
   };
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
@@ -294,4 +294,3 @@ const UserInfo = () => {
 };
 
 export default UserInfo;
-
