@@ -18,7 +18,6 @@ interface Props {
 const UserItemScroller = (props: Props) => {
   const { displayErrorMessage } = useMessageActions();
   const [items, setItems] = useState<User[]>([]);
-
   const { displayedUser, authToken } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();

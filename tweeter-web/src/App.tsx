@@ -17,6 +17,9 @@ import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { UserItemView } from "./model.presenter/UserItemPresenter";
 import { FolloweePresenter } from "./model.presenter/FolloweePresenter";
 import { FollowerPresenter } from "./model.presenter/FollowerPresenter";
+import { StatusItemView } from "./model.presenter/StatusItemPresenter";
+import { FeedPresenter } from "./model.presenter/FeedPresenter";
+import { StoryPresenter } from "./model.presenter/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -42,26 +45,6 @@ const App = () => {
 const AuthenticatedRoutes = () => {
   const { displayedUser } = useUserInfo();
 
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -73,9 +56,10 @@ const AuthenticatedRoutes = () => {
           path="feed/:displayedUser"
           element={
             <StatusItemScroller
-              itemDescription="feed items"
               featureUrl="/feed"
-              loadMore={loadMoreFeedItems}
+              presenterFactory={(view: StatusItemView) =>
+                new FeedPresenter(view)
+              }
             />
           }
         />
@@ -83,9 +67,10 @@ const AuthenticatedRoutes = () => {
           path="story/:displayedUser"
           element={
             <StatusItemScroller
-              itemDescription="story items"
               featureUrl="/story"
-              loadMore={loadMoreStoryItems}
+              presenterFactory={(view: StatusItemView) =>
+                new StoryPresenter(view)
+              }
             />
           }
         />
