@@ -7,7 +7,10 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import { AuthToken, User } from "tweeter-shared";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/messagehooks";
-import { AuthService } from "../../../model.service/AuthService";
+import {
+  LoginPresenter,
+  LoginView,
+} from "../../../model.presenter/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -23,44 +26,31 @@ const Login = (props: Props) => {
   const { updateUserInfo } = useUserInfoActions();
   const { displayErrorMessage } = useMessageActions();
 
+  const listener: LoginView = {
+    setIsLoading: setIsLoading,
+    displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo,
+    navigate: navigate,
+    originalUrl: props.originalUrl,
+  };
+
+  const presenter = new LoginPresenter(listener);
+
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
   };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
+    if (
+      event.key == "Enter" &&
+      !presenter.checkSubmitButtonStatus(alias, password)
+    ) {
       doLogin();
     }
   };
 
   const doLogin = async () => {
-    try {
-      setIsLoading(true);
-
-      const [user, authToken] = await login(alias, password);
-
-      updateUserInfo(user, user, authToken, rememberMe);
-
-      if (!!props.originalUrl) {
-        navigate(props.originalUrl);
-      } else {
-        navigate(`/feed/${user.alias}`);
-      }
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const login = async (
-    alias: string,
-    password: string
-  ): Promise<[User, AuthToken]> => {
-    // TODO replace service call with presenter call
-    return new AuthService().login(alias, password);
+    presenter.doLogin(alias, password, rememberMe);
   };
 
   const inputFieldFactory = () => {
