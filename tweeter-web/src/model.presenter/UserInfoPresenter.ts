@@ -5,6 +5,8 @@ import { useMessageActions } from "../components/toaster/messagehooks";
 export interface UserInfoView {
   setIsFollower: (value: boolean) => void;
   setFolloweeCount: (value: number) => void;
+  setFollowerCount: (value: number) => void;
+  setIsLoading: (value: boolean) => void;
 }
 
 export class UserInfoPresenter {
@@ -109,5 +111,84 @@ export class UserInfoPresenter {
     const followeeCount = await this.getFolloweeCount(authToken, userToFollow);
 
     return [followerCount, followeeCount];
+  }
+
+  public async setNumbFollowers(authToken: AuthToken, displayedUser: User) {
+    try {
+      this._view.setFollowerCount(
+        await this.getFollowerCount(authToken, displayedUser)
+      );
+    } catch (error) {
+      this.useMessageAct.displayErrorMessage(
+        `Failed to get followers count because of exception: ${error}`
+      );
+    }
+  }
+
+  public async followDisplayedUser(
+    event: React.MouseEvent,
+    authToken: AuthToken | null,
+    displayedUser: User | null
+  ): Promise<void> {
+    event.preventDefault();
+    var followingUserToast = "";
+
+    try {
+      this._view.setIsLoading(true);
+      followingUserToast = this.useMessageAct.displayInfoMessage(
+        `Following ${displayedUser!.name}...`,
+        0
+      );
+
+      const [followerCount, followeeCount] = await this.follow(
+        authToken!,
+        displayedUser!
+      );
+
+      this._view.setIsFollower(true);
+      this._view.setFollowerCount(followerCount);
+      this._view.setFolloweeCount(followeeCount);
+    } catch (error) {
+      this.useMessageAct.displayErrorMessage(
+        `Failed to follow user because of exception: ${error}`
+      );
+    } finally {
+      this.useMessageAct.deleteMessage(followingUserToast);
+      this._view.setIsLoading(false);
+    }
+  }
+
+  public async unfollowDisplayedUser(
+    event: React.MouseEvent,
+    authToken: AuthToken | null,
+    displayedUser: User | null
+  ): Promise<void> {
+    event.preventDefault();
+
+    var unfollowingUserToast = "";
+
+    try {
+      this._view.setIsLoading(true);
+      unfollowingUserToast = this.useMessageAct.displayInfoMessage(
+        `Unfollowing ${displayedUser!.name}...`,
+        0
+      );
+
+      const [followerCount, followeeCount] = await this.unfollow(
+        authToken!,
+        displayedUser!
+      );
+
+      this._view.setIsFollower(false);
+      this._view.setFollowerCount(followerCount);
+      this._view.setFolloweeCount(followeeCount);
+    } catch (error) {
+      this.useMessageAct.displayErrorMessage(
+        `Failed to unfollow user because of exception: ${error}`
+      );
+    } finally {
+      this.useMessageAct.deleteMessage(unfollowingUserToast);
+      this._view.setIsLoading(false);
+    }
   }
 }
