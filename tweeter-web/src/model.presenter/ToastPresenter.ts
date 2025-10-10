@@ -1,7 +1,4 @@
-import {
-  useMessageActions,
-  useMessageList,
-} from "../components/toaster/messagehooks";
+import { useMessageActions, useMessageList } from "./messagehooks";
 
 export class ToastPresenter {
   private messageList = useMessageList();

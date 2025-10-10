@@ -1,4 +1,7 @@
-import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoContexts";
+import {
+  useUserInfo,
+  useUserInfoActions,
+} from "../../model.presenter/UserInfoContexts";
 import { Status } from "tweeter-shared";
 import { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -8,7 +11,7 @@ import {
   StatusItemPresenter,
   StatusItemView,
 } from "../../model.presenter/StatusItemPresenter";
-import { useMessageActions } from "../toaster/messagehooks";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 export const PAGE_SIZE = 10;
 

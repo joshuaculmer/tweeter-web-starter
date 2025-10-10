@@ -1,6 +1,6 @@
 import "./PostStatus.css";
 import { useState } from "react";
-import { useUserInfo } from "../userInfo/UserInfoContexts";
+import { useUserInfo } from "../../model.presenter/UserInfoContexts";
 import {
   PostStatusPresenter,
   PostStatusView,

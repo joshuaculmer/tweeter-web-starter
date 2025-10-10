@@ -1,7 +1,7 @@
 import { OverlayTrigger, OverlayTriggerProps, Tooltip } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconName } from "@fortawesome/fontawesome-common-types";
-import { useMessageActions } from "../toaster/messagehooks";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 interface Props {
   iconName: IconName;

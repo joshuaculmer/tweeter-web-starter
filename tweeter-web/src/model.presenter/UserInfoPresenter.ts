@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model.service/UserService";
-import { useMessageActions } from "../components/toaster/messagehooks";
+import { useMessageActions } from "./messagehooks";
 
 export interface UserInfoView {
   setIsFollower: (value: boolean) => void;

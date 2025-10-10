@@ -1,10 +1,13 @@
-import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoContexts";
+import {
+  useUserInfo,
+  useUserInfoActions,
+} from "../../model.presenter/UserInfoContexts";
 import { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { AuthToken, User } from "tweeter-shared";
 import { useParams } from "react-router-dom";
 import UserItem from "../userItem/UserItem";
-import { useMessageActions } from "../toaster/messagehooks";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 import {
   UserItemPresenter,
   UserItemView,

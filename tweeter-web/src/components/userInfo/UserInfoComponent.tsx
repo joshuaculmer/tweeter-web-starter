@@ -1,5 +1,8 @@
 import "./UserInfoComponent.css";
-import { useUserInfoActions, useUserInfo } from "./UserInfoContexts";
+import {
+  useUserInfoActions,
+  useUserInfo,
+} from "../../model.presenter/UserInfoContexts";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthToken, User } from "tweeter-shared";

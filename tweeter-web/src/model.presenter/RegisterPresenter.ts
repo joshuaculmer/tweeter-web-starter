@@ -1,8 +1,8 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
 import { Buffer } from "buffer";
-import { useMessageActions } from "../components/toaster/messagehooks";
-import { useUserInfoActions } from "../components/userInfo/UserInfoContexts";
+import { useMessageActions } from "./messagehooks";
+import { useUserInfoActions } from "./UserInfoContexts";
 import { useNavigate } from "react-router-dom";
 
 export interface RegisterView {

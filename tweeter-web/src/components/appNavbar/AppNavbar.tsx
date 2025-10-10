@@ -1,5 +1,5 @@
 import "./AppNavbar.css";
-import { useUserInfo } from "../userInfo/UserInfoContexts";
+import { useUserInfo } from "../../model.presenter/UserInfoContexts";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";

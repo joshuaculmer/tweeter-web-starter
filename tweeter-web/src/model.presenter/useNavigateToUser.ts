@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { useMessageActions } from "../components/toaster/messagehooks";
-import {
-  useUserInfo,
-  useUserInfoActions,
-} from "../components/userInfo/UserInfoContexts";
+import { useMessageActions } from "./messagehooks";
+import { useUserInfo, useUserInfoActions } from "./UserInfoContexts";
 import { UserService } from "../model.service/UserService";
 
 export const useNavigateToUser = () => {

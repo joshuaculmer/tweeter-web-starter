@@ -1,7 +1,7 @@
 import { AuthToken } from "tweeter-shared";
-import { useMessageActions } from "../components/toaster/messagehooks";
+import { useMessageActions } from "./messagehooks";
 import { useNavigate } from "react-router-dom";
-import { useUserInfoActions } from "../components/userInfo/UserInfoContexts";
+import { useUserInfoActions } from "./UserInfoContexts";
 
 export class AppNavbarPresenter {
   private useMessageAct = useMessageActions();

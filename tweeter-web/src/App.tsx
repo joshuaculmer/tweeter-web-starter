@@ -1,5 +1,5 @@
 import "./App.css";
-import { useUserInfo } from "./components/userInfo/UserInfoContexts";
+import { useUserInfo } from "./model.presenter/UserInfoContexts";
 import {
   BrowserRouter,
   Navigate,

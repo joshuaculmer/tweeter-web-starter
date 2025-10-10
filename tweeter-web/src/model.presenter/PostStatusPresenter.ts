@@ -1,5 +1,5 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { useMessageActions } from "../components/toaster/messagehooks";
+import { useMessageActions } from "./messagehooks";
 
 export interface PostStatusView {
   setIsLoading: (value: boolean) => void;

@@ -1,5 +1,5 @@
 import OAuth from "./OAuth";
-import { useMessageActions } from "../toaster/messagehooks";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 interface Props {
   headingText: string;
@@ -83,4 +83,3 @@ const AuthenticationFormLayout = (props: Props) => {
 };
 
 export default AuthenticationFormLayout;
-
