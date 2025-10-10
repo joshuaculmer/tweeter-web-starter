@@ -1,38 +1,19 @@
 import "./AppNavbar.css";
-import { useUserInfo, useUserInfoActions } from "../userInfo/UserInfoContexts";
+import { useUserInfo } from "../userInfo/UserInfoContexts";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { AuthToken } from "tweeter-shared";
-import { useMessageActions } from "../toaster/messagehooks";
+import { AppNavbarPresenter } from "../../model.presenter/AppNavbarPresenter";
 
 const AppNavbar = () => {
   const location = useLocation();
+  // should I also replace the useUserInfo and put that into the presenter class?
   const { authToken, displayedUser } = useUserInfo();
-  const { clearUserInfo } = useUserInfoActions();
-  const navigate = useNavigate();
-  const { displayInfoMessage, displayErrorMessage, deleteMessage } =
-    useMessageActions();
+
+  const presenter = new AppNavbarPresenter();
 
   const logOut = async () => {
-    const loggingOutToastId = displayInfoMessage("Logging Out...", 0);
-
-    try {
-      await logout(authToken!);
-
-      deleteMessage(loggingOutToastId);
-      clearUserInfo();
-      navigate("/login");
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`
-      );
-    }
-  };
-
-  const logout = async (authToken: AuthToken): Promise<void> => {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    presenter.logOut(authToken);
   };
 
   return (
@@ -129,4 +110,3 @@ const AppNavbar = () => {
 };
 
 export default AppNavbar;
-
