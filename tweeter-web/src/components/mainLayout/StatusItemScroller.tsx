@@ -31,7 +31,6 @@ const StatusItemScroller = (props: Props) => {
     displayErrorMessage: displayErrorMessage,
   };
 
-  // Status Item Presenters // replace with info from the factory
   const presenterRef = useRef<StatusItemPresenter | null>(null);
   if (!presenterRef.current) {
     presenterRef.current = props.presenterFactory(listener);

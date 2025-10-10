@@ -41,11 +41,13 @@ const UserItemScroller = (props: Props) => {
       displayedUserAliasParam &&
       displayedUserAliasParam != displayedUser!.alias
     ) {
-      getUser(authToken!, displayedUserAliasParam!).then((toUser) => {
-        if (toUser) {
-          setDisplayedUser(toUser);
-        }
-      });
+      presenterRef
+        .current!.getUser(authToken!, displayedUserAliasParam!)
+        .then((toUser) => {
+          if (toUser) {
+            setDisplayedUser(toUser);
+          }
+        });
     }
   }, [displayedUserAliasParam]);
 
@@ -62,14 +64,6 @@ const UserItemScroller = (props: Props) => {
 
   const loadMoreItems = async () => {
     presenterRef.current!.loadMoreItems(authToken!, displayedUser!.alias);
-  };
-
-  // potentially refactor
-  const getUser = async (
-    authToken: AuthToken,
-    alias: string
-  ): Promise<User | null> => {
-    return presenterRef.current!.getUser(authToken, alias);
   };
 
   return (
