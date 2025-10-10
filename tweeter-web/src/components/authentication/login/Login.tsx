@@ -1,8 +1,8 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useUserInfoActions } from "../../userInfo/UserInfoContexts";
-import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/messagehooks";
@@ -31,18 +31,23 @@ const Login = (props: Props) => {
     originalUrl: props.originalUrl,
   };
 
-  const presenterRef = useRef<LoginPresenter | null>(null);
-  if (!presenterRef.current) {
-    presenterRef.current = new LoginPresenter(listener);
-  }
+  const presenter = new LoginPresenter(listener);
+
+  const checkSubmitButtonStatus = (): boolean => {
+    return !alias || !password;
+  };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (
       event.key == "Enter" &&
-      !presenterRef.current!.checkSubmitButtonStatus(alias, password)
+      !presenter.checkSubmitButtonStatus(alias, password)
     ) {
-      presenterRef.current!.doLogin(alias, password, rememberMe);
+      doLogin();
     }
+  };
+
+  const doLogin = async () => {
+    presenter.doLogin(alias, password, rememberMe);
   };
 
   const inputFieldFactory = () => {
@@ -71,11 +76,9 @@ const Login = (props: Props) => {
       inputFieldFactory={inputFieldFactory}
       switchAuthenticationMethodFactory={switchAuthenticationMethodFactory}
       setRememberMe={setRememberMe}
-      submitButtonDisabled={() =>
-        presenterRef.current!.checkSubmitButtonStatus(alias, password)
-      }
+      submitButtonDisabled={checkSubmitButtonStatus}
       isLoading={isLoading}
-      submit={() => presenterRef.current!.doLogin(alias, password, rememberMe)}
+      submit={doLogin}
     />
   );
 };

@@ -1,6 +1,6 @@
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
@@ -20,6 +20,7 @@ const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+
   const listener: RegisterView = {
     setIsLoading: setIsLoading,
     setImageUrl: setImageUrl,
@@ -27,15 +28,12 @@ const Register = () => {
     setImageFileExtension: setImageFileExtension,
   };
 
-  const presenterRef = useRef<RegisterPresenter | null>(null);
-  if (!presenterRef.current) {
-    presenterRef.current = new RegisterPresenter(listener);
-  }
+  const presenter = new RegisterPresenter(listener);
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
     if (
       event.key == "Enter" &&
-      !presenterRef.current!.checkSubmitButtonStatus(
+      !presenter.checkSubmitButtonStatus(
         firstName,
         lastName,
         alias,
@@ -44,7 +42,7 @@ const Register = () => {
         imageFileExtension
       )
     ) {
-      presenterRef.current!.doRegister(
+      presenter.doRegister(
         firstName,
         lastName,
         alias,
@@ -58,7 +56,7 @@ const Register = () => {
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    presenterRef.current!.handleImageFile(file);
+    presenter.handleImageFile(file);
   };
 
   const inputFieldFactory = () => {
@@ -129,7 +127,7 @@ const Register = () => {
       switchAuthenticationMethodFactory={switchAuthenticationMethodFactory}
       setRememberMe={setRememberMe}
       submitButtonDisabled={() =>
-        presenterRef.current!.checkSubmitButtonStatus(
+        presenter.checkSubmitButtonStatus(
           firstName,
           lastName,
           alias,
@@ -140,7 +138,7 @@ const Register = () => {
       }
       isLoading={isLoading}
       submit={() => {
-        presenterRef.current!.doRegister(
+        presenter.doRegister(
           firstName,
           lastName,
           alias,
