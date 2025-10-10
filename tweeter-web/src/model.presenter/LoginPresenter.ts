@@ -1,6 +1,7 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
 import { useUserInfoActions } from "../components/userInfo/UserInfoContexts";
+import { useNavigate } from "react-router-dom";
 
 export interface LoginView {
   setIsLoading: (value: boolean) => void;
@@ -11,11 +12,11 @@ export interface LoginView {
     authToken: AuthToken,
     rememberMe: boolean
   ) => void;
-  navigate: (url: string) => void;
   originalUrl: string | undefined;
 }
 export class LoginPresenter {
   private view: LoginView;
+  private navigate = useNavigate();
   public constructor(view: LoginView) {
     this.view = view;
   }
@@ -37,9 +38,9 @@ export class LoginPresenter {
       this.view.updateUserInfo(user, user, authToken, rememberMe);
 
       if (!!this.view.originalUrl) {
-        this.view.navigate(this.view.originalUrl);
+        this.navigate(this.view.originalUrl);
       } else {
-        this.view.navigate(`/feed/${user.alias}`);
+        this.navigate(`/feed/${user.alias}`);
       }
     } catch (error) {
       this.view.displayErrorMessage(

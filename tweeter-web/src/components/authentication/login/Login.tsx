@@ -4,7 +4,6 @@ import { useUserInfoActions } from "../../userInfo/UserInfoContexts";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
-import { AuthToken, User } from "tweeter-shared";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../toaster/messagehooks";
 import {
@@ -22,7 +21,6 @@ const Login = (props: Props) => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate();
   const { updateUserInfo } = useUserInfoActions();
   const { displayErrorMessage } = useMessageActions();
 
@@ -30,7 +28,6 @@ const Login = (props: Props) => {
     setIsLoading: setIsLoading,
     displayErrorMessage: displayErrorMessage,
     updateUserInfo: updateUserInfo,
-    navigate: navigate,
     originalUrl: props.originalUrl,
   };
 
