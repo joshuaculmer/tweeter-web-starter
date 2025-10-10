@@ -31,6 +31,7 @@ const Login = (props: Props) => {
     originalUrl: props.originalUrl,
   };
 
+  // potentially refactor to useRef, but had issues with react hook renders last time
   const presenter = new LoginPresenter(listener);
 
   const checkSubmitButtonStatus = (): boolean => {
