@@ -1,16 +1,16 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { useMessageActions } from "./messagehooks";
+import { Presenter, View } from "./Presenter";
 
-export interface PostStatusView {
+export interface PostStatusView extends View {
   setIsLoading: (value: boolean) => void;
   setPost: (value: string) => void;
 }
 
-export class PostStatusPresenter {
+export class PostStatusPresenter extends Presenter<PostStatusView> {
   private useMessageAct = useMessageActions();
-  private _view: PostStatusView;
   public constructor(view: PostStatusView) {
-    this._view = view;
+    super(view);
   }
 
   public async postStatus(

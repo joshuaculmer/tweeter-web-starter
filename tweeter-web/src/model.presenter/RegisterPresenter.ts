@@ -1,26 +1,23 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
 import { Buffer } from "buffer";
-import { useMessageActions } from "./messagehooks";
 import { useUserInfoActions } from "./UserInfoContexts";
 import { useNavigate } from "react-router-dom";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View {
   setIsLoading: (value: boolean) => void;
   setImageUrl: (value: string) => void;
   setImageBytes: (value: Uint8Array) => void;
   setImageFileExtension: (value: string) => void;
 }
 
-export class RegisterPresenter {
-  private _view: RegisterView;
-
+export class RegisterPresenter extends Presenter<RegisterView> {
   private useUserInfoActions = useUserInfoActions();
-  private useMessageActions = useMessageActions();
   private navigate = useNavigate();
 
   public constructor(view: RegisterView) {
-    this._view = view;
+    super(view);
   }
 
   public async register(
@@ -87,7 +84,7 @@ export class RegisterPresenter {
     imageFileExtension: string,
     rememberMe: boolean
   ): Promise<void> {
-    try {
+    await this.doFailureReportingOperations(async () => {
       this._view.setIsLoading(true);
 
       const [user, authToken] = await this.register(
@@ -101,13 +98,9 @@ export class RegisterPresenter {
 
       this.useUserInfoActions.updateUserInfo(user, user, authToken, rememberMe);
       this.navigate(`/feed/${user.alias}`);
-    } catch (error) {
-      this.useMessageActions.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this._view.setIsLoading(false);
-    }
+    }, "register user");
+
+    this._view.setIsLoading(false);
   }
 
   public checkSubmitButtonStatus(
