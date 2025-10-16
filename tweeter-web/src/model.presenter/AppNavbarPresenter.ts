@@ -8,6 +8,7 @@ export class AppNavbarPresenter {
   private useUserInfoAct = useUserInfoActions();
   private navigate = useNavigate();
 
+  // TODO: fix the promises made here so that they are made in the service layer
   private logout = async (authToken: AuthToken | null): Promise<void> => {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
     await new Promise((res) => setTimeout(res, 1000));

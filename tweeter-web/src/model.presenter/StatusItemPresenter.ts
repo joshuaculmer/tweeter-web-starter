@@ -47,24 +47,7 @@ export abstract class StatusItemPresenter {
 
   public abstract loadMoreItems(authToken: AuthToken, alias: string): void;
 
-  //   public loadMoreItems() {
-  // THIS IS THE LOGIC AS CONTAINED INTHE STATUS ITEM SCROLLER
-  // try {
-  //   const [newItems, hasMore] = await props.loadMore(
-  //     authToken!,
-  //     displayedUser!.alias,
-  //     PAGE_SIZE,
-  //     lastItem
-  //   );
-  //   setHasMoreItems(() => hasMore);
-  //   setLastItem(() => newItems[newItems.length - 1]);
-  //   addItems(newItems);
-  // } catch (error) {
-  //   displayErrorMessage(
-  //     `Failed to load ${props.itemDescription} because of exception: ${error}`
-  //   );
-  // }
-  //   }
+
 
   public reset() {
     this._hasMoreItems = true;
