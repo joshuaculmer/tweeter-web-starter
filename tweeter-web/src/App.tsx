@@ -13,12 +13,12 @@ import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
-import { UserItemView } from "./model.presenter/UserItemPresenter";
 import { FolloweePresenter } from "./model.presenter/FolloweePresenter";
 import { FollowerPresenter } from "./model.presenter/FollowerPresenter";
-import { StatusItemView } from "./model.presenter/StatusItemPresenter";
 import { FeedPresenter } from "./model.presenter/FeedPresenter";
 import { StoryPresenter } from "./model.presenter/StoryPresenter";
+import { Status, User } from "tweeter-shared";
+import { PagedItemView } from "./model.presenter/PagedItemPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();
@@ -56,7 +56,7 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               featureUrl="/feed"
-              presenterFactory={(view: StatusItemView) =>
+              presenterFactory={(view: PagedItemView<Status>) =>
                 new FeedPresenter(view)
               }
             />
@@ -67,7 +67,7 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               featureUrl="/story"
-              presenterFactory={(view: StatusItemView) =>
+              presenterFactory={(view: PagedItemView<Status>) =>
                 new StoryPresenter(view)
               }
             />
@@ -79,7 +79,7 @@ const AuthenticatedRoutes = () => {
             <UserItemScroller
               key={`followees-${displayedUser?.alias}`}
               featureUrl="/followees"
-              presenterFactory={(view: UserItemView) =>
+              presenterFactory={(view: PagedItemView<User>) =>
                 new FolloweePresenter(view)
               }
             />
@@ -91,7 +91,7 @@ const AuthenticatedRoutes = () => {
             <UserItemScroller
               key={`followers-${displayedUser?.alias}`}
               featureUrl="/followers"
-              presenterFactory={(view: UserItemView) =>
+              presenterFactory={(view: PagedItemView<User>) =>
                 new FollowerPresenter(view)
               }
             />

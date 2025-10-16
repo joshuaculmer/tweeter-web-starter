@@ -8,6 +8,7 @@ import {
   RegisterPresenter,
   RegisterView,
 } from "../../../model.presenter/RegisterPresenter";
+import { useMessageActions } from "../../../model.presenter/messagehooks";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -19,13 +20,14 @@ const Register = () => {
   const [imageFileExtension, setImageFileExtension] = useState<string>("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const { displayErrorMessage } = useMessageActions();
 
   const listener: RegisterView = {
     setIsLoading: setIsLoading,
     setImageUrl: setImageUrl,
     setImageBytes: setImageBytes,
     setImageFileExtension: setImageFileExtension,
+    displayErrorMessage: displayErrorMessage,
   };
 
   const presenter = new RegisterPresenter(listener);

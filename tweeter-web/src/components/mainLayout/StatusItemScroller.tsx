@@ -7,17 +7,15 @@ import { useState, useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useParams } from "react-router-dom";
 import StatusItem from "../statusItem/StatusItem";
-import {
-  StatusItemPresenter,
-  StatusItemView,
-} from "../../model.presenter/StatusItemPresenter";
+import { StatusItemPresenter } from "../../model.presenter/StatusItemPresenter";
 import { useMessageActions } from "../../model.presenter/messagehooks";
+import { PagedItemView } from "../../model.presenter/PagedItemPresenter";
 
 export const PAGE_SIZE = 10;
 
 interface Props {
   featureUrl: string;
-  presenterFactory: (view: StatusItemView) => StatusItemPresenter;
+  presenterFactory: (view: PagedItemView<Status>) => StatusItemPresenter;
 }
 
 const StatusItemScroller = (props: Props) => {
@@ -27,7 +25,7 @@ const StatusItemScroller = (props: Props) => {
   const { setDisplayedUser } = useUserInfoActions();
   const { displayedUser: displayedUserAliasParam } = useParams();
 
-  const listener: StatusItemView = {
+  const listener: PagedItemView<Status> = {
     addItems(newItems: Status[]) {
       setItems((previousItems) => [...previousItems, ...newItems]);
     },

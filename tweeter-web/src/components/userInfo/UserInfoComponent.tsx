@@ -10,6 +10,7 @@ import {
   UserInfoPresenter,
   UserInfoView,
 } from "../../model.presenter/UserInfoPresenter";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 const UserInfo = () => {
   const [isFollower, setIsFollower] = useState(false);
@@ -19,6 +20,7 @@ const UserInfo = () => {
 
   const { currentUser, authToken, displayedUser } = useUserInfo();
   const { setDisplayedUser } = useUserInfoActions();
+  const { displayErrorMessage } = useMessageActions();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,6 +29,7 @@ const UserInfo = () => {
     setFolloweeCount: setFolloweeCount,
     setFollowerCount: setFollowerCount,
     setIsLoading: setIsLoading,
+    displayErrorMessage: displayErrorMessage,
   };
   const presenter: UserInfoPresenter = new UserInfoPresenter(listener);
 
