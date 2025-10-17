@@ -1,5 +1,6 @@
 import { AuthToken, Status, User } from "tweeter-shared";
 import { useMessageActions } from "./messagehooks";
+import { StatusService } from "../model.service/StatusService";
 
 export interface PostStatusView {
   setIsLoading: (value: boolean) => void;
@@ -9,6 +10,7 @@ export interface PostStatusView {
 export class PostStatusPresenter {
   private useMessageAct = useMessageActions();
   private _view: PostStatusView;
+  private service = new StatusService();
   public constructor(view: PostStatusView) {
     this._view = view;
   }
@@ -17,9 +19,7 @@ export class PostStatusPresenter {
     authToken: AuthToken,
     newStatus: Status
   ): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-    // TODO: Call the server to post the status
+    await this.service.postStatus(authToken, newStatus);
   }
 
   public async submitPost(

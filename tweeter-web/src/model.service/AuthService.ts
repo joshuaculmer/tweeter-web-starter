@@ -36,4 +36,9 @@ export class AuthService implements Service {
 
     return [user, FakeData.instance.authToken];
   }
+
+  public logout = async (authToken: AuthToken | null): Promise<void> => {
+    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
+    await new Promise((res) => setTimeout(res, 1000));
+  };
 }

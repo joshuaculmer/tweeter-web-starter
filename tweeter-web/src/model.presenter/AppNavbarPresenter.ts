@@ -2,16 +2,17 @@ import { AuthToken } from "tweeter-shared";
 import { useMessageActions } from "./messagehooks";
 import { useNavigate } from "react-router-dom";
 import { useUserInfoActions } from "./UserInfoContexts";
+import { AuthService } from "../model.service/AuthService";
 
 export class AppNavbarPresenter {
   private useMessageAct = useMessageActions();
   private useUserInfoAct = useUserInfoActions();
   private navigate = useNavigate();
+  private service = new AuthService();
 
-  // TODO: fix the promises made here so that they are made in the service layer
   private logout = async (authToken: AuthToken | null): Promise<void> => {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    await this.service.logout(authToken);
   };
 
   public async logOut(authToken: AuthToken | null) {
