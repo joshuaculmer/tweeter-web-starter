@@ -3,7 +3,7 @@ import { User } from "tweeter-shared";
 import { useNavigateToUser } from "../../model.presenter/useNavigateToUser";
 
 interface Props {
-  user: User;
+  item: User;
   featurePath: string;
 }
 
@@ -15,7 +15,7 @@ const UserItem = (props: Props) => {
         <div className="row mx-0 px-0">
           <div className="col-auto p-3">
             <img
-              src={props.user.imageUrl}
+              src={props.item.imageUrl}
               className="img-fluid"
               width="80"
               alt="Posting user"
@@ -24,14 +24,14 @@ const UserItem = (props: Props) => {
           <div className="col">
             <h2>
               <b>
-                {props.user.firstName} {props.user.lastName}
+                {props.item.firstName} {props.item.lastName}
               </b>{" "}
               -{" "}
               <Link
-                to={`${props.featurePath}/${props.user.alias}`}
+                to={`${props.featurePath}/${props.item.alias}`}
                 onClick={navigateToUser}
               >
-                {props.user.alias}
+                {props.item.alias}
               </Link>
             </h2>
           </div>

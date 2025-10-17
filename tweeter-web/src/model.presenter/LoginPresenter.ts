@@ -23,7 +23,6 @@ export class LoginPresenter extends Presenter<LoginView> {
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    // TODO replace service call with presenter call
     return new AuthService().login(alias, password);
   }
 

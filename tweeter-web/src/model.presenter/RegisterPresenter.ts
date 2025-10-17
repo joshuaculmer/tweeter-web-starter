@@ -28,7 +28,6 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     userImageBytes: Uint8Array,
     imageFileExtension: string
   ): Promise<[User, AuthToken]> {
-    // TODO replace service call with presenter
     return new AuthService().register(
       firstName,
       lastName,
