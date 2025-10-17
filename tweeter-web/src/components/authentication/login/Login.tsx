@@ -2,7 +2,7 @@ import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useUserInfoActions } from "../../../model.presenter/UserInfoContexts";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
 import { useMessageActions } from "../../../model.presenter/messagehooks";
@@ -29,6 +29,7 @@ const Login = (props: Props) => {
     displayErrorMessage: displayErrorMessage,
     updateUserInfo: updateUserInfo,
     originalUrl: props.originalUrl,
+    alias: alias,
   };
 
   // potentially refactor to useRef, but had issues with react hook renders last time

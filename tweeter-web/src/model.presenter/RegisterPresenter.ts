@@ -1,21 +1,15 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
 import { Buffer } from "buffer";
-import { useUserInfoActions } from "./UserInfoContexts";
-import { useNavigate } from "react-router-dom";
-import { Presenter, View } from "./Presenter";
+import { AuthPresenter, AuthView } from "./AuthPresenter";
 
-export interface RegisterView extends View {
-  setIsLoading: (value: boolean) => void;
+export interface RegisterView extends AuthView {
   setImageUrl: (value: string) => void;
   setImageBytes: (value: Uint8Array) => void;
   setImageFileExtension: (value: string) => void;
 }
 
-export class RegisterPresenter extends Presenter<RegisterView> {
-  private useUserInfoActions = useUserInfoActions();
-  private navigate = useNavigate();
-
+export class RegisterPresenter extends AuthPresenter<RegisterView> {
   public constructor(view: RegisterView) {
     super(view);
   }
@@ -83,23 +77,18 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     imageFileExtension: string,
     rememberMe: boolean
   ): Promise<void> {
-    await this.doFailureReportingOperations(async () => {
-      this._view.setIsLoading(true);
-
-      const [user, authToken] = await this.register(
+    await this.doUserAuthenticationAction(
+      rememberMe,
+      "register user",
+      this.register(
         firstName,
         lastName,
         alias,
         password,
         imageBytes,
         imageFileExtension
-      );
-
-      this.useUserInfoActions.updateUserInfo(user, user, authToken, rememberMe);
-      this.navigate(`/feed/${user.alias}`);
-    }, "register user");
-
-    this._view.setIsLoading(false);
+      )
+    );
   }
 
   public checkSubmitButtonStatus(
@@ -110,13 +99,13 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     imageUrl: string,
     imageFileExtension: string
   ): boolean {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
+    return super.checkSubmitButtonStatus(
+      firstName,
+      lastName,
+      alias,
+      password,
+      imageUrl,
+      imageFileExtension
     );
   }
 }

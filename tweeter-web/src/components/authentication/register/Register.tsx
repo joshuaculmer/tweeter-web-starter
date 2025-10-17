@@ -9,6 +9,7 @@ import {
   RegisterView,
 } from "../../../model.presenter/RegisterPresenter";
 import { useMessageActions } from "../../../model.presenter/messagehooks";
+import { useUserInfoActions } from "../../../model.presenter/UserInfoContexts";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -21,6 +22,7 @@ const Register = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { displayErrorMessage } = useMessageActions();
+  const { updateUserInfo } = useUserInfoActions();
 
   const listener: RegisterView = {
     setIsLoading: setIsLoading,
@@ -28,6 +30,7 @@ const Register = () => {
     setImageBytes: setImageBytes,
     setImageFileExtension: setImageFileExtension,
     displayErrorMessage: displayErrorMessage,
+    updateUserInfo: updateUserInfo,
   };
 
   const presenter = new RegisterPresenter(listener);
