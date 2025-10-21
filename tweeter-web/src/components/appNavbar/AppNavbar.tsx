@@ -13,8 +13,6 @@ import {
 import { useMessageActions } from "../../model.presenter/messagehooks";
 
 const AppNavbar = () => {
-  const useMessageAct = useMessageActions();
-  const useUserInfoAct = useUserInfoActions();
   const location = useLocation();
   // should I also replace the useUserInfo and put that into the presenter class?
   const { authToken, displayedUser } = useUserInfo();
