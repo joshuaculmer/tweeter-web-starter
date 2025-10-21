@@ -1,5 +1,4 @@
 import { AuthToken } from "tweeter-shared";
-import { useNavigate } from "react-router-dom";
 import { AuthService } from "../model.service/AuthService";
 import { MessageView, Presenter } from "./Presenter";
 
@@ -9,11 +8,15 @@ export interface AppNavbarView extends MessageView {
 }
 
 export class AppNavbarPresenter extends Presenter<AppNavbarView> {
-  private service;
+  private _service;
 
   public constructor(view: AppNavbarView) {
     super(view);
-    this.service = new AuthService();
+    this._service = new AuthService();
+  }
+
+  public get service() {
+    return this._service;
   }
 
   public async logOut(authToken: AuthToken | null) {
