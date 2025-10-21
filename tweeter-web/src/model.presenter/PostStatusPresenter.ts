@@ -1,53 +1,41 @@
 import { AuthToken, Status, User } from "tweeter-shared";
-import { useMessageActions } from "./messagehooks";
 import { StatusService } from "../model.service/StatusService";
+import { MessageView, Presenter } from "./Presenter";
 
-export interface PostStatusView {
+export interface PostStatusView extends MessageView {
   setIsLoading: (value: boolean) => void;
   setPost: (value: string) => void;
 }
 
-export class PostStatusPresenter {
-  private useMessageAct = useMessageActions();
-  private _view: PostStatusView;
-  private service = new StatusService();
+export class PostStatusPresenter extends Presenter<PostStatusView> {
+  private _service = new StatusService();
+
   public constructor(view: PostStatusView) {
-    this._view = view;
+    super(view);
+  }
+
+  public get service() {
+    return this._service;
   }
 
   public async postStatus(
-    authToken: AuthToken,
-    newStatus: Status
-  ): Promise<void> {
-    await this.service.postStatus(authToken, newStatus);
-  }
-
-  public async submitPost(
     authToken: AuthToken | null,
     post: string,
     currentUser: User | null
   ) {
     var postingStatusToastId = "";
 
-    try {
-      this._view.setIsLoading(true);
-      postingStatusToastId = this.useMessageAct.displayInfoMessage(
-        "Posting status...",
-        0
-      );
+    this.view.setIsLoading(true);
+    postingStatusToastId = this.view.displayInfoMessage("Posting status...", 0);
 
-      const status = new Status(post, currentUser!, Date.now());
-      await this.postStatus(authToken!, status);
+    await this.doFailureReportingOperations(async () => {
+      await this.service.postStatus(authToken!, post);
 
-      this._view.setPost("");
-      this.useMessageAct.displayInfoMessage!("Status posted!", 2000);
-    } catch (error) {
-      this.useMessageAct.displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    } finally {
-      this.useMessageAct.deleteMessage(postingStatusToastId);
-      this._view.setIsLoading(false);
-    }
+      this.view.setPost("");
+      this.view.displayInfoMessage!("Status posted!", 2000);
+    }, "posting status");
+
+    this.view.deleteMessage(postingStatusToastId);
+    this.view.setIsLoading(false);
   }
 }

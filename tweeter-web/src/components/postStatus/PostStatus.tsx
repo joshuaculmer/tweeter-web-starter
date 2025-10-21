@@ -5,21 +5,28 @@ import {
   PostStatusPresenter,
   PostStatusView,
 } from "../../model.presenter/PostStatusPresenter";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 const PostStatus = () => {
   const { currentUser, authToken } = useUserInfo();
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { displayErrorMessage, displayInfoMessage, deleteMessage } =
+    useMessageActions();
+
   const listener: PostStatusView = {
     setIsLoading: setIsLoading,
     setPost: setPost,
+    deleteMessage: deleteMessage,
+    displayInfoMessage: displayInfoMessage,
+    displayErrorMessage: displayErrorMessage,
   };
   const presenter = new PostStatusPresenter(listener);
 
   const submitPost = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await presenter.submitPost(authToken, post, currentUser);
+    await presenter.postStatus(authToken, post, currentUser);
   };
 
   const clearPost = (event: React.MouseEvent) => {
