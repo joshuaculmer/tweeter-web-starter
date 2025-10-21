@@ -1,16 +1,39 @@
 import "./AppNavbar.css";
-import { useUserInfo } from "../../model.presenter/UserInfoContexts";
+import {
+  useUserInfo,
+  useUserInfoActions,
+} from "../../model.presenter/UserInfoContexts";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Image from "react-bootstrap/Image";
-import { AppNavbarPresenter } from "../../model.presenter/AppNavbarPresenter";
+import {
+  AppNavbarPresenter,
+  AppNavbarView,
+} from "../../model.presenter/AppNavbarPresenter";
+import { useMessageActions } from "../../model.presenter/messagehooks";
 
 const AppNavbar = () => {
+  const useMessageAct = useMessageActions();
+  const useUserInfoAct = useUserInfoActions();
   const location = useLocation();
   // should I also replace the useUserInfo and put that into the presenter class?
   const { authToken, displayedUser } = useUserInfo();
+  const { displayErrorMessage, displayInfoMessage, deleteMessage } =
+    useMessageActions();
+  const { clearUserInfo } = useUserInfoActions();
+  const navigate = useNavigate();
 
-  const presenter = new AppNavbarPresenter();
+  const listener: AppNavbarView = {
+    deleteMessage: deleteMessage,
+    clearUserInfo: clearUserInfo,
+    displayInfoMessage: displayInfoMessage,
+    displayErrorMessage: displayErrorMessage,
+    navigateToLogin: () => {
+      navigate("/login");
+    },
+  };
+
+  const presenter = new AppNavbarPresenter(listener);
 
   const logOut = async () => {
     presenter.logOut(authToken);

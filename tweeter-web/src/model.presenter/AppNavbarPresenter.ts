@@ -3,34 +3,37 @@ import { useMessageActions } from "./messagehooks";
 import { useNavigate } from "react-router-dom";
 import { useUserInfoActions } from "./UserInfoContexts";
 import { AuthService } from "../model.service/AuthService";
+import { MessageView, Presenter } from "./Presenter";
 
-export class AppNavbarPresenter {
+export interface AppNavbarView extends MessageView {
+  clearUserInfo: () => void;
+  navigateToLogin: () => void;
+}
+
+export class AppNavbarPresenter extends Presenter<AppNavbarView> {
   private useMessageAct = useMessageActions();
   private useUserInfoAct = useUserInfoActions();
   private navigate = useNavigate();
-  private service = new AuthService();
+  private service;
 
-  private logout = async (authToken: AuthToken | null): Promise<void> => {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await this.service.logout(authToken);
-  };
+  public constructor(view: AppNavbarView) {
+    super(view);
+    this.service = new AuthService();
+  }
 
   public async logOut(authToken: AuthToken | null) {
-    const loggingOutToastId = this.useMessageAct.displayInfoMessage(
-      "Logging Out...",
-      0
-    );
-
-    try {
-      await this.logout(authToken!);
-
-      this.useMessageAct.deleteMessage(loggingOutToastId);
-      this.useUserInfoAct.clearUserInfo();
-      this.navigate("/login");
-    } catch (error) {
-      this.useMessageAct.displayErrorMessage(
-        `Failed to log user out because of exception: ${error}`
+    this.doFailureReportingOperations(async () => {
+      const loggingOutToastId = this._view.displayInfoMessage(
+        "Logging Out...",
+        0
       );
-    }
+
+      await this.service.logout(authToken);
+
+      this._view.deleteMessage(loggingOutToastId);
+      this._view.clearUserInfo();
+      
+      this.navigate("/login");
+    }, "log user out");
   }
 }
