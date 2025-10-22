@@ -1,7 +1,7 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useUserInfoActions } from "../../../model.presenter/UserInfoContexts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
@@ -13,6 +13,7 @@ import {
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -33,7 +34,7 @@ const Login = (props: Props) => {
   };
 
   // potentially refactor to useRef, but had issues with react hook renders last time
-  const presenter = new LoginPresenter(listener);
+  let presenter = props.presenter ?? new LoginPresenter(listener);
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
