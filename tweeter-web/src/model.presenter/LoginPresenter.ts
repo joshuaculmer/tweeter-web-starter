@@ -1,14 +1,14 @@
 import { User, AuthToken } from "tweeter-shared";
 import { AuthService } from "../model.service/AuthService";
-import { useNavigate } from "react-router-dom";
+
 import { AuthPresenter, AuthView } from "./AuthPresenter";
 
 export interface LoginView extends AuthView {
   originalUrl: string | undefined;
   alias: string;
+  navigate: (path: string) => void;
 }
 export class LoginPresenter extends AuthPresenter<LoginView> {
-  private navigate = useNavigate();
   public constructor(view: LoginView) {
     super(view);
   }
@@ -28,9 +28,9 @@ export class LoginPresenter extends AuthPresenter<LoginView> {
     );
 
     if (!!this.view.originalUrl && this.view.originalUrl != "/") {
-      this.navigate(this.view.originalUrl);
+      this.view.navigate(this.view.originalUrl);
     } else {
-      this.navigate(`/feed/${alias}`);
+      this.view.navigate(`/feed/${alias}`);
     }
   }
 

@@ -37,19 +37,18 @@ describe("Login Component", () => {
     expect(signInButton).toBeDisabled();
   });
 
-  // This test does not work as intended...Having an issue with mock presenter not acutally being used
-  // it("calls the presenter's login method with correct parameters when the sign in button is pressed", async () => {
-  //   const mockPresenter = mock<LoginPresenter>();
-  //   const mockPresenterInstance = instance(mockPresenter);
+  it("calls the presenter's login method with correct parameters when the sign in button is pressed", async () => {
+    const mockPresenter = mock<LoginPresenter>();
+    const mockPresenterInstance = instance(mockPresenter);
 
-  //   const { signInButton, aliasField, passwordField, user } =
-  //     renderLoginAndGetElements("/", mockPresenterInstance);
+    const { signInButton, aliasField, passwordField, user } =
+      renderLoginAndGetElements("/", mockPresenterInstance);
 
-  //   await typeAliasAndPassword(aliasField, passwordField, signInButton, user);
-  //   await user.click(signInButton);
+    await typeAliasAndPassword(aliasField, passwordField, signInButton, user);
+    await user.click(signInButton);
 
-  //   verify(mockPresenter.login(anything(), anything())).once();
-  // });
+    verify(mockPresenter.doLogin("alias", "password", false)).once();
+  });
 });
 
 async function typeAliasAndPassword(
@@ -80,7 +79,7 @@ function renderLoginAndGetElements(
   presenter?: LoginPresenter
 ) {
   const user = userEvent.setup();
-
+  console.log("in render function" + presenter);
   renderLogin(originalUrl, presenter);
   const signInButton = screen.getByRole("button", { name: /Sign in/i });
   const aliasField = screen.getByLabelText("alias");

@@ -1,7 +1,8 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { useUserInfoActions } from "../../../model.presenter/UserInfoContexts";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import AuthenticationFields from "../AuthenticationFields";
@@ -24,6 +25,9 @@ const Login = (props: Props) => {
 
   const { updateUserInfo } = useUserInfoActions();
   const { displayErrorMessage } = useMessageActions();
+  const navigate = useNavigate();
+
+  const presenterRef = useRef<LoginPresenter | null>(null);
 
   const listener: LoginView = {
     setIsLoading: setIsLoading,
@@ -31,10 +35,13 @@ const Login = (props: Props) => {
     updateUserInfo: updateUserInfo,
     originalUrl: props.originalUrl,
     alias: alias,
+    navigate: navigate,
   };
 
-  // potentially refactor to useRef, but had issues with react hook renders last time
-  let presenter = props.presenter ?? new LoginPresenter(listener);
+  if (!presenterRef.current) {
+    presenterRef.current = props.presenter ?? new LoginPresenter(listener);
+  }
+  const presenter = presenterRef.current;
 
   const checkSubmitButtonStatus = (): boolean => {
     return !alias || !password;
