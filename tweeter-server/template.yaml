@@ -113,9 +113,9 @@ Resources:
           #       responses: *commonAmazonResponses
           #     responses: *commonSwaggerResponses
 
-            #
-            # ADD MORE ENDPOINT DEFINITIONS HERE
-            #
+          #
+          # ADD MORE ENDPOINT DEFINITIONS HERE
+          #
           /followees/get:
             post:
               consumes: *commonConsumes
@@ -141,7 +141,20 @@ Resources:
                   Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getFollowersFunction.Arn}/invocations
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
-              responses: *commonSwaggerResponses    
+              responses: *commonSwaggerResponses
+          /user/get:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getUserFunction.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
 
   #
   # SQS Queues
@@ -198,7 +211,7 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /followees/get
-            Method: POST # Keep all of them POST 
+            Method: POST # Keep all of them POST
 
   getFollowersFunction:
     Type: AWS::Serverless::Function
@@ -213,8 +226,22 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /followers/get
-            Method: POST # Keep all of them POST 
+            Method: POST # Keep all of them POST
 
+  getUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: getUserFunction
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\GetuserLambda.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/get
+            Method: POST # Keep all of them POST
   #
   # ADD MORE WEB API LAMBDA DEFINITIONS HERE
   #
