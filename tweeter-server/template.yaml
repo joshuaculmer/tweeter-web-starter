@@ -156,6 +156,20 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /user/followerstatus/get:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetIsFollowerStatus.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
   #
   # SQS Queues
   #
@@ -241,6 +255,21 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /user/get
+            Method: POST # Keep all of them POST
+
+  GetIsFollowerStatus:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetIsFollowerStatus
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\GetIsFollowerStatus.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/followerstatus/get
             Method: POST # Keep all of them POST
   #
   # ADD MORE WEB API LAMBDA DEFINITIONS HERE
