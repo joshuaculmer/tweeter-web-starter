@@ -16,12 +16,12 @@ export class UserService {
     return FakeData.instance.isFollower();
   }
 
-  public async getFolloweeCount(token: string, user: User): Promise<number> {
+  public async getFolloweeCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getFolloweeCount(user.alias);
   }
 
-  public async getFollowerCount(token: string, user: User): Promise<number> {
+  public async getFollowerCount(token: string, user: UserDto): Promise<number> {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getFollowerCount(user.alias);
   }

@@ -35,7 +35,7 @@ The rest of the instruction is [here](https://github.com/BYU-CS-340/softwaredesi
 
 - [x] GetUser
 - [x] GetIsFollowerStatus
-- [ ] GetFolloweeCount
-- [ ] GetFollowerCount
+- [x] GetFolloweeCount
+- [x] GetFollowerCount
 - [ ] Unfollow
 - [ ] Follow

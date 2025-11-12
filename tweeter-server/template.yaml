@@ -170,6 +170,34 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /user/followerCount/get:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetFollowerCount.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /user/followeeCount/get:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetFolloweeCount.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
   #
   # SQS Queues
   #
@@ -270,6 +298,36 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /user/followerstatus/get
+            Method: POST # Keep all of them POST
+
+  GetFollowerCount:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetFollowerCount
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\GetFollowerCount.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/followerCount/get
+            Method: POST # Keep all of them POST
+
+  GetFolloweeCount:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: GetFolloweeCount
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\GetFolloweeCount.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/followeeCount/get
             Method: POST # Keep all of them POST
   #
   # ADD MORE WEB API LAMBDA DEFINITIONS HERE
