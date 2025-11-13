@@ -198,6 +198,34 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /user/follow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Follow.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /user/unfollow:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Unfollow.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
   #
   # SQS Queues
   #
@@ -328,6 +356,36 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /user/followeeCount/get
+            Method: POST # Keep all of them POST
+
+  Follow:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Follow
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\Follow.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/follow
+            Method: POST # Keep all of them POST
+
+  Unfollow:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Unfollow
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\user\Unfollow.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /user/unfollow
             Method: POST # Keep all of them POST
   #
   # ADD MORE WEB API LAMBDA DEFINITIONS HERE
