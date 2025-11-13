@@ -267,6 +267,49 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
+
+          /status/post:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${PostStatus.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /status/loadmorefeeditems:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoadMoreFeedItems.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /status/loadmorestoryitems:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LoadMoreStoryItems.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
   #
   # SQS Queues
   #
@@ -434,7 +477,7 @@ Resources:
     Properties:
       FunctionName: Login
       ##### Modify Handler property to match your code.
-      Handler: \src\lambda\auth\Login.ts # Handler code here
+      Handler: \src\lambda\auth\LoginLambda.ts # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -449,7 +492,7 @@ Resources:
     Properties:
       FunctionName: Logout
       ##### Modify Handler property to match your code.
-      Handler: \src\lambda\auth\Logout.ts # Handler code here
+      Handler: \src\lambda\auth\LogoutLambda.ts # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -464,7 +507,7 @@ Resources:
     Properties:
       FunctionName: Register
       ##### Modify Handler property to match your code.
-      Handler: \src\lambda\auth\Register.ts # Handler code here
+      Handler: \src\lambda\auth\RegisterLambda.ts # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
@@ -472,6 +515,51 @@ Resources:
           Properties:
             RestApiId: !Ref tweeterApi
             Path: /auth/register
+            Method: POST # Keep all of them POST
+
+  PostStatus:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PostStatus
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\status\PostStatusLambda.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/post
+            Method: POST # Keep all of them POST
+
+  LoadMoreFeedItems:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LoadMoreFeedItems
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\status\LoadMoreFeedItemsLambda.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/loadmorefeeditems
+            Method: POST # Keep all of them POST
+
+  LoadMoreStoryItems:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: LoadMoreStoryItems
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\status\LoadMoreStoryItemsLambda.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/loadmorestoryitems
             Method: POST # Keep all of them POST
 
   #

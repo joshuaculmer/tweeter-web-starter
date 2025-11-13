@@ -1,0 +1,1 @@
+{"version":3,"file":"Follow.js","sourceRoot":"","sources":["../../../src/lambda/user/Follow.ts"],"names":[],"mappings":";;;AAAA,iEAA8D;AAGvD,MAAM,OAAO,GAAG,KAAK,EAAE,OAAsB,EAAiB,EAAE;IACrE,MAAM,WAAW,GAAG,IAAI,yBAAW,EAAE,CAAC;IACtC,WAAW,CAAC,MAAM,CAAC,OAAO,CAAC,KAAK,EAAE,OAAO,CAAC,YAAY,CAAC,CAAC;AAC1D,CAAC,CAAC;AAHW,QAAA,OAAO,WAGlB"}

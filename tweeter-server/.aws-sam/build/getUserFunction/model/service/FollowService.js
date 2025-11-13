@@ -11,22 +11,9 @@ class FollowService {
         return await this.getFakeData(lastItem, pageSize, userAlias);
     }
     async getFakeData(lastItem, pageSize, userAlias) {
-        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfUsers(this.getDomainObject(lastItem), pageSize, userAlias);
-        const dtos = items.map((user) => this.createDto(user));
+        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfUsers(tweeter_shared_1.User.fromDto(lastItem), pageSize, userAlias);
+        const dtos = items.map((user) => user.dto);
         return [dtos, hasMore];
-    }
-    createDto(user) {
-        return {
-            firstName: user.firstName,
-            lastName: user.lastName,
-            alias: user.alias,
-            imageUrl: user.imageUrl,
-        };
-    }
-    getDomainObject(dto) {
-        return dto == null
-            ? null
-            : new tweeter_shared_1.User(dto.firstName, dto.lastName, dto.alias, dto.imageUrl);
     }
 }
 exports.FollowService = FollowService;
