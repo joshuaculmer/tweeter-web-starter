@@ -941,7 +941,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFolloweesFunction
-      Handler: \src\lambda\follow\GetFolloweesLambda.ts
+      Handler: lambda/follow/GetFolloweesLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -964,7 +964,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getFollowersFunction
-      Handler: \src\lambda\follow\GetFollowersLambda.ts
+      Handler: lambda/follow/GetFollowersLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -987,7 +987,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: getUserFunction
-      Handler: \src\lambda\user\GetuserLambda.ts
+      Handler: lambda/user/GetuserLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1010,7 +1010,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: GetIsFollowerStatus
-      Handler: \src\lambda\user\GetIsFollowerStatus.ts
+      Handler: lambda/user/GetIsFollowerStatus.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1033,7 +1033,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: GetFollowerCount
-      Handler: \src\lambda\user\GetFollowerCount.ts
+      Handler: lambda/user/GetFollowerCount.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1056,7 +1056,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: GetFolloweeCount
-      Handler: \src\lambda\user\GetFolloweeCount.ts
+      Handler: lambda/user/GetFolloweeCount.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1079,7 +1079,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Follow
-      Handler: \src\lambda\user\Follow.ts
+      Handler: lambda/user/Follow.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1102,7 +1102,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Unfollow
-      Handler: \src\lambda\user\Unfollow.ts
+      Handler: lambda/user/Unfollow.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1125,7 +1125,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Login
-      Handler: \src\lambda\auth\LoginLambda.ts
+      Handler: lambda/auth/LoginLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1148,7 +1148,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Logout
-      Handler: \src\lambda\auth\LogoutLambda.ts
+      Handler: lambda/auth/LogoutLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1171,7 +1171,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: Register
-      Handler: \src\lambda\auth\RegisterLambda.ts
+      Handler: lambda/auth/RegisterLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1194,7 +1194,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: PostStatus
-      Handler: \src\lambda\status\PostStatusLambda.ts
+      Handler: lambda/status/PostStatusLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1217,7 +1217,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: LoadMoreFeedItems
-      Handler: \src\lambda\status\LoadMoreFeedItemsLambda.ts
+      Handler: lambda/status/LoadMoreFeedItemsLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess
@@ -1240,7 +1240,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: LoadMoreStoryItems
-      Handler: \src\lambda\status\LoadMoreStoryItemsLambda.ts
+      Handler: lambda/status/LoadMoreStoryItemsLambda.handler
       Policies:
       - AWSLambdaBasicExecutionRole
       - AmazonSESFullAccess

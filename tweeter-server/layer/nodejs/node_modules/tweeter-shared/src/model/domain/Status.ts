@@ -275,3 +275,4 @@ export class Status {
     return JSON.stringify(this);
   }
 }
+
