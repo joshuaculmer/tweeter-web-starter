@@ -226,6 +226,47 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
+          /auth/login:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Login.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /auth/logout:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Logout.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
+
+          /auth/register:
+            post:
+              consumes: *commonConsumes
+              produces: *commonProduces
+              x-amazon-apigateway-integration:
+                type: aws
+                httpMethod: POST
+                uri:
+                  ##### Change "userCreateFunction" to the actual function name.
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${Register.Arn}/invocations
+                requestTemplates: *commonRequestTemplates
+                responses: *commonAmazonResponses
+              responses: *commonSwaggerResponses
   #
   # SQS Queues
   #
@@ -387,6 +428,52 @@ Resources:
             RestApiId: !Ref tweeterApi
             Path: /user/unfollow
             Method: POST # Keep all of them POST
+
+  Login:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Login
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\auth\Login.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /auth/login
+            Method: POST # Keep all of them POST
+
+  Logout:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Logout
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\auth\Logout.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /auth/logout
+            Method: POST # Keep all of them POST
+
+  Register:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Register
+      ##### Modify Handler property to match your code.
+      Handler: \src\lambda\auth\Register.ts # Handler code here
+      Policies: *commonPolicies
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /auth/register
+            Method: POST # Keep all of them POST
+
   #
   # ADD MORE WEB API LAMBDA DEFINITIONS HERE
   #
