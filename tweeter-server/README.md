@@ -21,9 +21,9 @@ The rest of the instruction is [here](https://github.com/BYU-CS-340/softwaredesi
 
 ### Auth
 
-- [ ] Login
-- [ ] Register
-- [ ] Logout
+- [x] Login
+- [x] Register
+- [x] Logout
 
 ### Status
 
