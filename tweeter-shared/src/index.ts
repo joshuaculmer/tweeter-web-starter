@@ -19,6 +19,8 @@ export type { UserDto } from "./model/dto/UserDto";
 // Requests
 //
 export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequest";
+export type { LoadMoreStoryItemsRequest } from "./model/net/request/LoadMoreStoryItemsRequest";
+export type { LoadMoreFeedItemsRequest } from "./model/net/request/LoadMoreFeedItemsRequest";
 
 //
 // Response
