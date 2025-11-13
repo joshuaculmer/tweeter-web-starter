@@ -7,4 +7,4 @@ const handler = async (LogoutRequest) => {
     return authService.logout(LogoutRequest.token);
 };
 exports.handler = handler;
-//# sourceMappingURL=LogoutLambda.js.map    
+//# sourceMappingURL=LogoutLambda.js.map

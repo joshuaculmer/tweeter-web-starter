@@ -5,4 +5,4 @@ export interface PagedUserItemRequest {
   readonly userAlias: string;
   readonly pageSize: number;
   readonly lastItem: UserDto | null;
-}
+} 

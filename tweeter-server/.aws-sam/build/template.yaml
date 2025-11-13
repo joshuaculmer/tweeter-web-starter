@@ -90,6 +90,8 @@ Resources:
         paths:
           /followees/get:
             post:
+              description: Retrieves the list of users that the authenticated user
+                is following
               consumes:
               - application/json
               produces:
@@ -150,6 +152,8 @@ Resources:
                       type: string
           /followers/get:
             post:
+              description: Retrieves the list of users following the authenticated
+                user
               consumes:
               - application/json
               produces:
@@ -210,6 +214,7 @@ Resources:
                       type: string
           /user/get:
             post:
+              description: Retrieves user profile information
               consumes:
               - application/json
               produces:
@@ -270,6 +275,8 @@ Resources:
                       type: string
           /user/followerstatus/get:
             post:
+              description: Checks if the authenticated user is following a specified
+                user
               consumes:
               - application/json
               produces:
@@ -330,6 +337,7 @@ Resources:
                       type: string
           /user/followerCount/get:
             post:
+              description: Retrieves the total number of followers for a user
               consumes:
               - application/json
               produces:
@@ -390,6 +398,7 @@ Resources:
                       type: string
           /user/followeeCount/get:
             post:
+              description: Retrieves the total number of users that a user is following
               consumes:
               - application/json
               produces:
@@ -450,6 +459,7 @@ Resources:
                       type: string
           /user/follow:
             post:
+              description: Follows a specified user
               consumes:
               - application/json
               produces:
@@ -510,6 +520,7 @@ Resources:
                       type: string
           /user/unfollow:
             post:
+              description: Unfollows a specified user
               consumes:
               - application/json
               produces:
@@ -570,6 +581,7 @@ Resources:
                       type: string
           /auth/login:
             post:
+              description: Authenticates a user and creates a session
               consumes:
               - application/json
               produces:
@@ -630,6 +642,7 @@ Resources:
                       type: string
           /auth/logout:
             post:
+              description: Logs out the authenticated user and ends their session
               consumes:
               - application/json
               produces:
@@ -690,6 +703,7 @@ Resources:
                       type: string
           /auth/register:
             post:
+              description: Registers a new user account
               consumes:
               - application/json
               produces:
@@ -750,6 +764,7 @@ Resources:
                       type: string
           /status/post:
             post:
+              description: Creates and posts a new status update
               consumes:
               - application/json
               produces:
@@ -810,6 +825,7 @@ Resources:
                       type: string
           /status/loadmorefeeditems:
             post:
+              description: Loads additional feed items with pagination support
               consumes:
               - application/json
               produces:
@@ -870,6 +886,8 @@ Resources:
                       type: string
           /status/loadmorestoryitems:
             post:
+              description: Loads additional story items for a user's profile with
+                pagination support
               consumes:
               - application/json
               produces:
