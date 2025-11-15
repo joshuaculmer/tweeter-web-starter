@@ -1,23 +1,32 @@
-import { AuthToken, User, FakeData, UserDto, PagedUserItemResponse } from "tweeter-shared";
+import {
+  AuthToken,
+  User,
+  FakeData,
+  UserDto,
+  PagedUserItemResponse,
+  PagedUserItemRequest,
+} from "tweeter-shared";
 
 export class FollowService {
   public async loadMoreFollowees(
-    token: string,
-    userAlias: string,
-    pageSize: number,
-    lastItem: UserDto | null
+    request: PagedUserItemRequest
   ): Promise<PagedUserItemResponse> {
-    return await this.getFakeData(lastItem, pageSize, userAlias);
+    return await this.getFakeData(
+      request.lastItem,
+      request.pageSize,
+      request.userAlias
+    );
   }
 
   public async loadMoreFollowers(
-    token: string,
-    userAlias: string,
-    pageSize: number,
-    lastItem: UserDto | null
+    request: PagedUserItemRequest
   ): Promise<PagedUserItemResponse> {
     // TODO: Replace with the result of calling server
-    return await this.getFakeData(lastItem, pageSize, userAlias);
+    return await this.getFakeData(
+      request.lastItem,
+      request.pageSize,
+      request.userAlias
+    );
   }
 
   private async getFakeData(
@@ -31,6 +40,11 @@ export class FollowService {
       userAlias
     );
     const dtos = items.map((user) => user.dto);
-    return { items: dtos, hasMore: hasMore, success: true, message: "Fetched follow data successfully" };
+    return {
+      items: dtos,
+      hasMore: hasMore,
+      success: true,
+      message: "Fetched follow data successfully",
+    };
   }
 }

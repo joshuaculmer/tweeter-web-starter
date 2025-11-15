@@ -4,15 +4,15 @@ import {
   PagedStatusItemResponse,
 } from "tweeter-shared";
 import { StatusService } from "../../model/service/StatusService";
+import { tryCatchWrapper } from "../LambdaHelper";
 
 export const handler = async (
   request: LoadMoreFeedItemsRequest
 ): Promise<PagedStatusItemResponse> => {
   const statusService = new StatusService();
-  return statusService.loadMoreFeedItems(
-    request.token,
-    request.userAlias,
-    request.pageSize,
-    request.lastItem
+  return await tryCatchWrapper(
+    statusService.loadMoreFeedItems,
+    request,
+    "Load More Feed Items Lambda"
   );
 };

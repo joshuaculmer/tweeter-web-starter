@@ -4,19 +4,19 @@ import {
   FakeData,
   PagedStatusItemResponse,
   TweeterResponse,
+  LoadMoreFeedItemsRequest,
+  LoadMoreStoryItemsRequest,
+  PostStatusRequest,
 } from "tweeter-shared";
 
 export class StatusService {
   public async loadMoreFeedItems(
-    token: string,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
+    request: LoadMoreFeedItemsRequest
   ): Promise<PagedStatusItemResponse> {
     // TODO: Replace with the result of calling server
     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-      lastItem,
-      pageSize
+      request.lastItem,
+      request.pageSize
     );
     return {
       items: items,
@@ -27,15 +27,12 @@ export class StatusService {
   }
 
   public async loadMoreStoryItems(
-    token: string,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
+    request: LoadMoreStoryItemsRequest
   ): Promise<PagedStatusItemResponse> {
     // TODO: Replace with the result of calling server
     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-      lastItem,
-      pageSize
+      request.lastItem,
+      request.pageSize
     );
     return {
       items: items,
@@ -46,8 +43,7 @@ export class StatusService {
   }
 
   public async postStatus(
-    token: string,
-    newStatus: string
+    request: PostStatusRequest
   ): Promise<TweeterResponse> {
     // Pause so we can see the logging out message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));

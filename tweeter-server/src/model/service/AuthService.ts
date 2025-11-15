@@ -6,10 +6,13 @@ import {
   UserDto,
   TweeterResponse,
   AuthResponse,
+  LogoutRequest,
+  LoginRequest,
+  RegisterRequest,
 } from "tweeter-shared";
 
 export class AuthService {
-  public async login(alias: string, password: string): Promise<AuthResponse> {
+  public async login(request: LoginRequest): Promise<AuthResponse> {
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
     if (user === null) {
@@ -23,17 +26,11 @@ export class AuthService {
     };
   }
 
-  public async register(
-    firstName: string,
-    lastName: string,
-    alias: string,
-    password: string,
-    userImageBytes: Uint8Array,
-    imageFileExtension: string
-  ): Promise<AuthResponse> {
+  public async register(request: RegisterRequest): Promise<AuthResponse> {
     // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
+    const imageStringBase64: string = Buffer.from(
+      request.userImageBytes
+    ).toString("base64");
 
     // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
@@ -50,7 +47,7 @@ export class AuthService {
     };
   }
 
-  public logout = async (token: String | null): Promise<TweeterResponse> => {
+  public logout = async (request: LogoutRequest): Promise<TweeterResponse> => {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
     return { success: true, message: "Logged out successfully" };
   };

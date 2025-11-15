@@ -7,12 +7,20 @@ import {
   NumberResponse,
   UserResponse,
   BooleanResponse,
+  GetIsFollowerRequest,
+  Follow,
+  FollowRequest,
+  GetIsFolloweeRequest,
+  GetUserRequest,
+  UnfollowRequest,
 } from "tweeter-shared";
 
 export class UserService {
-  public async getUser(token: string, alias: string): Promise<UserResponse> {
+  public async getUser(request: GetUserRequest): Promise<UserResponse> {
     // TODO: Replace with the result of calling server
-    const response: User | null = FakeData.instance.findUserByAlias(alias);
+    const response: User | null = FakeData.instance.findUserByAlias(
+      request.userAlias
+    );
     return {
       user: response ? response.dto : null,
       success: true,
@@ -21,9 +29,7 @@ export class UserService {
   }
 
   public async getIsFollowerStatus(
-    token: string,
-    user: UserDto,
-    selectedUser: UserDto
+    request: GetIsFollowerRequest
   ): Promise<BooleanResponse> {
     // TODO: Replace with the result of calling server
     return {
@@ -34,11 +40,10 @@ export class UserService {
   }
 
   public async getFolloweeCount(
-    token: string,
-    user: UserDto
+    request: GetIsFolloweeRequest
   ): Promise<NumberResponse> {
     // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFolloweeCount(user.alias);
+    const count = await FakeData.instance.getFolloweeCount(request.user.alias);
     return {
       success: true,
       message: "Fetched followee count successfully",
@@ -47,11 +52,10 @@ export class UserService {
   }
 
   public async getFollowerCount(
-    token: string,
-    user: UserDto
+    request: GetIsFollowerRequest
   ): Promise<NumberResponse> {
     // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFollowerCount(user.alias);
+    const count = await FakeData.instance.getFollowerCount(request.user.alias);
     return {
       success: true,
       message: "Fetched follower count successfully",
@@ -59,20 +63,14 @@ export class UserService {
     };
   }
 
-  public async unfollow(
-    token: string,
-    userToUnfollow: UserDto
-  ): Promise<TweeterResponse> {
+  public async unfollow(request: UnfollowRequest): Promise<TweeterResponse> {
     // Pause so we can see the unfollow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
     // TODO: Call the server
     return { success: true, message: "Unfollowed successfully" };
   }
 
-  public async follow(
-    token: string,
-    userToFollow: UserDto
-  ): Promise<TweeterResponse> {
+  public async follow(request: FollowRequest): Promise<TweeterResponse> {
     // Pause so we can see the follow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
     // TODO: Call the server
