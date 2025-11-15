@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatusService = void 0;
 const tweeter_shared_1 = require("tweeter-shared");
 class StatusService {
-    async loadMoreFeedItems(token, userAlias, pageSize, lastItem) {
+    async loadMoreFeedItems(request) {
         // TODO: Replace with the result of calling server
-        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(request.lastItem, request.pageSize);
         return {
             items: items,
             hasMore: hasMore,
@@ -13,9 +13,9 @@ class StatusService {
             message: "Fetched feed data successfully",
         };
     }
-    async loadMoreStoryItems(token, userAlias, pageSize, lastItem) {
+    async loadMoreStoryItems(request) {
         // TODO: Replace with the result of calling server
-        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(request.lastItem, request.pageSize);
         return {
             items: items,
             hasMore: hasMore,
@@ -23,7 +23,7 @@ class StatusService {
             message: "Fetched story data successfully",
         };
     }
-    async postStatus(token, newStatus) {
+    async postStatus(request) {
         // Pause so we can see the logging out message. Remove when connected to the server
         await new Promise((f) => setTimeout(f, 2000));
         // TODO: Call the server to post the status

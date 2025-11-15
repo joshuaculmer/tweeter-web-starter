@@ -1,10 +1,10 @@
-import { UserDto, TweeterResponse, NumberResponse, UserResponse, BooleanResponse } from "tweeter-shared";
+import { TweeterResponse, NumberResponse, UserResponse, BooleanResponse, GetIsFollowerRequest, FollowRequest, GetIsFolloweeRequest, GetUserRequest, UnfollowRequest } from "tweeter-shared";
 export declare class UserService {
-    getUser(token: string, alias: string): Promise<UserResponse>;
-    getIsFollowerStatus(token: string, user: UserDto, selectedUser: UserDto): Promise<BooleanResponse>;
-    getFolloweeCount(token: string, user: UserDto): Promise<NumberResponse>;
-    getFollowerCount(token: string, user: UserDto): Promise<NumberResponse>;
-    unfollow(token: string, userToUnfollow: UserDto): Promise<TweeterResponse>;
-    follow(token: string, userToFollow: UserDto): Promise<TweeterResponse>;
+    getUser(request: GetUserRequest): Promise<UserResponse>;
+    getIsFollowerStatus(request: GetIsFollowerRequest): Promise<BooleanResponse>;
+    getFolloweeCount(request: GetIsFolloweeRequest): Promise<NumberResponse>;
+    getFollowerCount(request: GetIsFollowerRequest): Promise<NumberResponse>;
+    unfollow(request: UnfollowRequest): Promise<TweeterResponse>;
+    follow(request: FollowRequest): Promise<TweeterResponse>;
 }
 //# sourceMappingURL=UserService.d.ts.map

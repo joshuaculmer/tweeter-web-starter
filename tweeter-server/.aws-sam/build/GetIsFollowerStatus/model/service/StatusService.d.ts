@@ -1,7 +1,7 @@
-import { Status, PagedStatusItemResponse, TweeterResponse } from "tweeter-shared";
+import { PagedStatusItemResponse, TweeterResponse, LoadMoreFeedItemsRequest, LoadMoreStoryItemsRequest, PostStatusRequest } from "tweeter-shared";
 export declare class StatusService {
-    loadMoreFeedItems(token: string, userAlias: string, pageSize: number, lastItem: Status | null): Promise<PagedStatusItemResponse>;
-    loadMoreStoryItems(token: string, userAlias: string, pageSize: number, lastItem: Status | null): Promise<PagedStatusItemResponse>;
-    postStatus(token: string, newStatus: string): Promise<TweeterResponse>;
+    loadMoreFeedItems(request: LoadMoreFeedItemsRequest): Promise<PagedStatusItemResponse>;
+    loadMoreStoryItems(request: LoadMoreStoryItemsRequest): Promise<PagedStatusItemResponse>;
+    postStatus(request: PostStatusRequest): Promise<TweeterResponse>;
 }
 //# sourceMappingURL=StatusService.d.ts.map
