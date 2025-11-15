@@ -1,18 +1,20 @@
 import { Buffer } from "buffer";
-import { User, AuthToken, FakeData } from "tweeter-shared";
+import { User, AuthToken, FakeData, FollowRequest } from "tweeter-shared";
 import { Service } from "./Service";
+import { ServerFacade } from "./ServerFacade";
 
 export class AuthService implements Service {
+  private server = new ServerFacade();
+
   public async login(
     alias: string,
     password: string
   ): Promise<[User, AuthToken]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const user = this.server.login(alias, password);
     if (user === null) {
       throw new Error("Invalid alias or password");
     }
-    return [user, FakeData.instance.authToken];
+    return [(await user).user, (await user).token];
   }
 
   public async register(
@@ -27,8 +29,14 @@ export class AuthService implements Service {
     const imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const user = this.server.register({
+      firstName: firstName,
+      lastName: lastName,
+      alias: alias,
+      password: password,
+      userImageBytes: imageStringBase64,
+      imageFileExtension: imageFileExtension,
+    });
 
     if (user === null) {
       throw new Error("Invalid registration");
@@ -39,6 +47,6 @@ export class AuthService implements Service {
 
   public logout = async (authToken: AuthToken | null): Promise<void> => {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    this.server.logout(authToken!.token);
   };
 }

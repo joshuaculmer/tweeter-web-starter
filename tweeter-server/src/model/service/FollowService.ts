@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData, UserDto } from "tweeter-shared";
+import { AuthToken, User, FakeData, UserDto, PagedUserItemResponse } from "tweeter-shared";
 
 export class FollowService {
   public async loadMoreFollowees(
@@ -6,7 +6,7 @@ export class FollowService {
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
-  ): Promise<[UserDto[], boolean]> {
+  ): Promise<PagedUserItemResponse> {
     return await this.getFakeData(lastItem, pageSize, userAlias);
   }
 
@@ -15,7 +15,7 @@ export class FollowService {
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
-  ): Promise<[UserDto[], boolean]> {
+  ): Promise<PagedUserItemResponse> {
     // TODO: Replace with the result of calling server
     return await this.getFakeData(lastItem, pageSize, userAlias);
   }
@@ -24,13 +24,13 @@ export class FollowService {
     lastItem: UserDto | null,
     pageSize: number,
     userAlias: string
-  ): Promise<[UserDto[], boolean]> {
+  ): Promise<PagedUserItemResponse> {
     const [items, hasMore] = FakeData.instance.getPageOfUsers(
       User.fromDto(lastItem),
       pageSize,
       userAlias
     );
     const dtos = items.map((user) => user.dto);
-    return [dtos, hasMore];
+    return { items: dtos, hasMore: hasMore, success: true, message: "Fetched follow data successfully" };
   }
 }

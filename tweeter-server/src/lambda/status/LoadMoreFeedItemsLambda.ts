@@ -1,9 +1,13 @@
-import { Status, LoadMoreFeedItemsRequest } from "tweeter-shared";
+import {
+  Status,
+  LoadMoreFeedItemsRequest,
+  PagedStatusItemResponse,
+} from "tweeter-shared";
 import { StatusService } from "../../model/service/StatusService";
 
 export const handler = async (
   request: LoadMoreFeedItemsRequest
-): Promise<[Status[], boolean]> => {
+): Promise<PagedStatusItemResponse> => {
   const statusService = new StatusService();
   return statusService.loadMoreFeedItems(
     request.token,

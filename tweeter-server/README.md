@@ -27,9 +27,9 @@ The rest of the instruction is [here](https://github.com/BYU-CS-340/softwaredesi
 
 ### Status
 
-- [ ] LoadMoreFeedItems
-- [ ] LoadMoreStoryItems
-- [ ] PostStatus
+- [X] LoadMoreFeedItems
+- [X] LoadMoreStoryItems
+- [X] PostStatus
 
 ### User
 

@@ -4,8 +4,7 @@ exports.handler = void 0;
 const UserService_1 = require("../../model/service/UserService");
 const handler = async (request) => {
     const userService = new UserService_1.UserService();
-    const isFollower = await userService.getIsFollowerStatus(request.token, request.user, request.selectedUser);
-    return isFollower;
+    return userService.getIsFollowerStatus(request.token, request.user, request.selectedUser);
 };
 exports.handler = handler;
 //# sourceMappingURL=GetIsFollowerStatus.js.map

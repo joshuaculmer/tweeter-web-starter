@@ -1,1 +1,1 @@
-{"version":3,"file":"Unfollow.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/Unfollow.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,eAAe,EAAE,MAAM,sDAAsD,CAAC;AAEvF,eAAO,MAAM,OAAO,YAAmB,eAAe,KAAG,QAAQ,IAAI,CAGpE,CAAC"}
+{"version":3,"file":"Unfollow.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/Unfollow.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,gBAAgB,CAAC;AAEjD,OAAO,EAAE,eAAe,EAAE,MAAM,sDAAsD,CAAC;AAEvF,eAAO,MAAM,OAAO,YACT,eAAe,KACvB,QAAQ,eAAe,CAGzB,CAAC"}

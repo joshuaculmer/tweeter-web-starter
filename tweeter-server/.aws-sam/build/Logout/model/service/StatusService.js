@@ -5,16 +5,29 @@ const tweeter_shared_1 = require("tweeter-shared");
 class StatusService {
     async loadMoreFeedItems(token, userAlias, pageSize, lastItem) {
         // TODO: Replace with the result of calling server
-        return tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        return {
+            items: items,
+            hasMore: hasMore,
+            success: true,
+            message: "Fetched feed data successfully",
+        };
     }
     async loadMoreStoryItems(token, userAlias, pageSize, lastItem) {
         // TODO: Replace with the result of calling server
-        return tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+        return {
+            items: items,
+            hasMore: hasMore,
+            success: true,
+            message: "Fetched story data successfully",
+        };
     }
     async postStatus(token, newStatus) {
         // Pause so we can see the logging out message. Remove when connected to the server
         await new Promise((f) => setTimeout(f, 2000));
         // TODO: Call the server to post the status
+        return { success: true, message: "Status posted successfully" };
     }
 }
 exports.StatusService = StatusService;

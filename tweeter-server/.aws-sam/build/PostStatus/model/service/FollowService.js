@@ -13,7 +13,7 @@ class FollowService {
     async getFakeData(lastItem, pageSize, userAlias) {
         const [items, hasMore] = tweeter_shared_1.FakeData.instance.getPageOfUsers(tweeter_shared_1.User.fromDto(lastItem), pageSize, userAlias);
         const dtos = items.map((user) => user.dto);
-        return [dtos, hasMore];
+        return { items: dtos, hasMore: hasMore, success: true, message: "Fetched follow data successfully" };
     }
 }
 exports.FollowService = FollowService;

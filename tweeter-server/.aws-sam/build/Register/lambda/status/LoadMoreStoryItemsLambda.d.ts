@@ -1,3 +1,3 @@
-import { Status, LoadMoreStoryItemsRequest } from "tweeter-shared";
-export declare const hanlder: (request: LoadMoreStoryItemsRequest) => Promise<[Status[], boolean]>;
+import { LoadMoreStoryItemsRequest, PagedStatusItemResponse } from "tweeter-shared";
+export declare const hanlder: (request: LoadMoreStoryItemsRequest) => Promise<PagedStatusItemResponse>;
 //# sourceMappingURL=LoadMoreStoryItemsLambda.d.ts.map

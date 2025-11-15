@@ -1,6 +1,7 @@
 import { Status } from "../../domain/Status";
+import { TweeterRequest } from "./TweeterRequest";
 
-export interface LoadMoreFeedItemsRequest {
+export interface LoadMoreFeedItemsRequest extends TweeterRequest{
   token: string;
   userAlias: string;
   pageSize: number;

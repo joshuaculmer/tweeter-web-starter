@@ -1,6 +1,6 @@
 import { UserDto } from "../../dto/UserDto";
 import { TweeterResponse } from "./TweeterResponse";
 
-export interface GetUserResponse extends TweeterResponse {
-  readonly user: UserDto | null;
+export interface BooleanResponse extends TweeterResponse {
+  readonly bool: boolean;
 }

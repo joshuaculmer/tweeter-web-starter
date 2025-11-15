@@ -1,1 +1,1 @@
-{"version":3,"file":"RegisterLambda.d.ts","sourceRoot":"","sources":["../../../src/lambda/auth/RegisterLambda.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,OAAO,EAAE,MAAM,gBAAgB,CAAC;AAEpD,OAAO,EAAE,eAAe,EAAE,MAAM,sDAAsD,CAAC;AAEvF,eAAO,MAAM,OAAO,wCAEjB,QAAQ,CAAC,OAAO,EAAE,SAAS,CAAC,CAU9B,CAAC"}
+{"version":3,"file":"RegisterLambda.d.ts","sourceRoot":"","sources":["../../../src/lambda/auth/RegisterLambda.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,YAAY,EAAsB,MAAM,gBAAgB,CAAC;AAElE,OAAO,EAAE,eAAe,EAAE,MAAM,sDAAsD,CAAC;AAEvF,eAAO,MAAM,OAAO,wCAEjB,QAAQ,YAAY,CAUtB,CAAC"}

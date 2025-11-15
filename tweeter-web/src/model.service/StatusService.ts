@@ -1,15 +1,21 @@
 import { AuthToken, Status, FakeData } from "tweeter-shared";
 import { Service } from "./Service";
+import { ServerFacade } from "./ServerFacade";
 
 export class StatusService implements Service {
+  private server = new ServerFacade();
   public async loadMoreFeedItems(
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.server.loadMoreFeedItems({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem,
+    });
   }
 
   public async loadMoreStoryItems(
@@ -18,16 +24,18 @@ export class StatusService implements Service {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.server.loadMoreStoryItems({
+      token: authToken.token,
+      userAlias: userAlias,
+      pageSize: pageSize,
+      lastItem: lastItem,
+    });
   }
 
   public async postStatus(
     authToken: AuthToken,
     newStatus: string
   ): Promise<void> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-    // TODO: Call the server to post the status
+    this.server.postStatus(authToken.token, newStatus);
   }
 }
