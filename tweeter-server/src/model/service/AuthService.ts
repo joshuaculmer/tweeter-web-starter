@@ -32,7 +32,6 @@ export class AuthService {
       request.userImageBytes
     ).toString("base64");
 
-    // TODO: Replace with the result of calling the server
     const user = FakeData.instance.firstUser;
 
     if (user === null) {

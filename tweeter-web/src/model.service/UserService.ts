@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData } from "tweeter-shared";
+import { AuthToken, User } from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "./ServerFacade";
 
@@ -8,7 +8,7 @@ export class UserService implements Service {
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
-    return this.server.getUser(alias);
+    return this.server.getUser(authToken, alias);
   }
 
   public async getIsFollowerStatus(

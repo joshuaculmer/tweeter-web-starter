@@ -6,7 +6,7 @@ import {
 import { StatusService } from "../../model/service/StatusService";
 import { tryCatchWrapper } from "../LambdaHelper";
 
-export const hanlder = async (
+export const handler = async (
   request: LoadMoreStoryItemsRequest
 ): Promise<PagedStatusItemResponse> => {
   const statusService = new StatusService();

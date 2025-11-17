@@ -192,15 +192,15 @@ export class ServerFacade {
 
   public async register(
     request: RegisterRequest
-  ): Promise<{ token: string; user: User }> {
+  ): Promise<{ token: AuthToken; user: User }> {
     const response = await this.clientCommunicator.doPost<any, any>(
       request,
       "/auth/register"
     );
     if (response.success) {
       return {
-        token: response.token,
-        user: User.fromDto(response.user) as User,
+        token: response.AuthToken,
+        user: User.fromDto(response.UserDto) as User,
       };
     } else {
       console.error(response);
@@ -228,9 +228,9 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       LoadMoreFeedItemsRequest,
       any
-    >(request, "/status/feed/get");
+    >(request, "/status/loadmorefeeditems");
 
-    return response;
+    return [response.items, response.hasMore];
   }
 
   public async loadMoreStoryItems(
@@ -239,8 +239,8 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<
       LoadMoreStoryItemsRequest,
       any
-    >(request, "/status/feed/get");
+    >(request, "/status/loadmorestoryitems");
 
-    return response;
+    return [response.items, response.hasMore];
   }
 }

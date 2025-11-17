@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { User, AuthToken, FakeData, FollowRequest } from "tweeter-shared";
+import { User, AuthToken } from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "./ServerFacade";
 
@@ -29,7 +29,7 @@ export class AuthService implements Service {
     const imageStringBase64: string =
       Buffer.from(userImageBytes).toString("base64");
 
-    const user = this.server.register({
+    const response = await this.server.register({
       firstName: firstName,
       lastName: lastName,
       alias: alias,
@@ -38,11 +38,11 @@ export class AuthService implements Service {
       imageFileExtension: imageFileExtension,
     });
 
-    if (user === null) {
+    if (response === null) {
       throw new Error("Invalid registration");
     }
 
-    return [user, FakeData.instance.authToken];
+    return [response.user, response.token];
   }
 
   public logout = async (authToken: AuthToken | null): Promise<void> => {
