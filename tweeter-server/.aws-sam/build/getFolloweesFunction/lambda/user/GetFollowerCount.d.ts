@@ -1,4 +1,4 @@
-import { GetIsFollowerRequest } from "tweeter-shared/src/model/net/request/GetIsFollowerRequest";
+import { GetFollowerCountRequest } from "tweeter-shared/src/model/net/request/GetFollowerCountRequest";
 import { NumberResponse } from "tweeter-shared";
-export declare const handler: (request: GetIsFollowerRequest) => Promise<NumberResponse>;
+export declare const handler: (request: GetFollowerCountRequest) => Promise<NumberResponse>;
 //# sourceMappingURL=GetFollowerCount.d.ts.map

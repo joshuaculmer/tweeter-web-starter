@@ -31,6 +31,8 @@ export type { PostStatusRequest } from "./model/net/request/PostStatusRequest";
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 export type { RegisterRequest } from "./model/net/request/RegisterRequest";
 export type { UnfollowRequest } from "./model/net/request/UnfollowRequest";
+export type { GetFollowerCountRequest } from "./model/net/request/GetFollowerCountRequest";
+export type { GetFolloweeCountRequest } from "./model/net/request/GetFolloweeCountRequest";
 
 //
 // Response

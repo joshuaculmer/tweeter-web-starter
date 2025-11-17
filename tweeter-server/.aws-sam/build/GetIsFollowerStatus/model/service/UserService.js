@@ -22,7 +22,7 @@ class UserService {
     }
     async getFolloweeCount(request) {
         // TODO: Replace with the result of calling server
-        const count = await tweeter_shared_1.FakeData.instance.getFolloweeCount(request.user.alias);
+        const count = await tweeter_shared_1.FakeData.instance.getFolloweeCount(request.alias);
         return {
             success: true,
             message: "Fetched followee count successfully",
@@ -31,7 +31,7 @@ class UserService {
     }
     async getFollowerCount(request) {
         // TODO: Replace with the result of calling server
-        const count = await tweeter_shared_1.FakeData.instance.getFollowerCount(request.user.alias);
+        const count = await tweeter_shared_1.FakeData.instance.getFollowerCount(request.alias);
         return {
             success: true,
             message: "Fetched follower count successfully",

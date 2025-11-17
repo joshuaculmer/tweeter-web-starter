@@ -33,11 +33,13 @@ export class ClientCommunicator {
 
     try {
       const resp: Response = await fetch(url, params);
-      console.log(`Received response: ${JSON.stringify(resp)}`);
+      // console.log(`Received response: ${JSON.stringify(resp)}`);
 
       if (resp.ok) {
+        console.log("response.ok is true");
         // Be careful with the return type here. resp.json() returns Promise<any> which means there is no type checking on response.
         const response: RES = await resp.json();
+        console.log(`Parsed response:`, response);
         return response;
       } else {
         const error = await resp.json();

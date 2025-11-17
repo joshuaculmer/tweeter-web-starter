@@ -8,11 +8,11 @@ import {
   UserResponse,
   BooleanResponse,
   GetIsFollowerRequest,
-  Follow,
   FollowRequest,
-  GetIsFolloweeRequest,
   GetUserRequest,
   UnfollowRequest,
+  GetFollowerCountRequest,
+  GetFolloweeCountRequest,
 } from "tweeter-shared";
 
 export class UserService {
@@ -40,10 +40,10 @@ export class UserService {
   }
 
   public async getFolloweeCount(
-    request: GetIsFolloweeRequest
+    request: GetFolloweeCountRequest
   ): Promise<NumberResponse> {
     // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFolloweeCount(request.user.alias);
+    const count = await FakeData.instance.getFolloweeCount(request.alias);
     return {
       success: true,
       message: "Fetched followee count successfully",
@@ -52,10 +52,10 @@ export class UserService {
   }
 
   public async getFollowerCount(
-    request: GetIsFollowerRequest
+    request: GetFollowerCountRequest
   ): Promise<NumberResponse> {
     // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFollowerCount(request.user.alias);
+    const count = await FakeData.instance.getFollowerCount(request.alias);
     return {
       success: true,
       message: "Fetched follower count successfully",

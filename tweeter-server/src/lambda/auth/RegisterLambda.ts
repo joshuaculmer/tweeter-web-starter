@@ -3,7 +3,7 @@ import { AuthService } from "../../model/service/AuthService";
 import { RegisterRequest } from "tweeter-shared/src/model/net/request/RegisterRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
 
-export const hanlder = async (
+export const handler = async (
   RegisterRequest: RegisterRequest
 ): Promise<AuthResponse> => {
   const authService = new AuthService();

@@ -8,7 +8,7 @@ export const handler = async (
 ): Promise<PagedUserItemResponse> => {
   const followService = new FollowService();
   return await tryCatchWrapper(
-    followService.loadMoreFollowees,
+    followService.loadMoreFollowees.bind(followService),
     request,
     "Get Followees Lambda"
   );

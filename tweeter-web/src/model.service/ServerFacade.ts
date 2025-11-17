@@ -88,6 +88,7 @@ export class ServerFacade {
       throw new Error(response.message ?? undefined);
     }
   }
+  // npm run test test/service/ServerFacade.test.ts
 
   public async getIsFollower(
     token: string,
@@ -118,7 +119,7 @@ export class ServerFacade {
       { userAlias: alias },
       "/user/followerCount/get"
     );
-    return response.count;
+    return response.Number;
   }
 
   public async getFolloweeCount(alias: string): Promise<number> {
@@ -126,27 +127,37 @@ export class ServerFacade {
       { userAlias: alias },
       "/user/followeeCount/get"
     );
-    return response.count;
+    return response.Number;
   }
 
   public async follow(token: string, selectedUser: User): Promise<void> {
-    await this.clientCommunicator.doPost<any, any>(
+    const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
         selectedUser: selectedUser.dto as UserDto,
       },
       "/user/follow"
     );
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? "Follow failed");
+    }
   }
 
   public async unfollow(token: string, selectedUser: User): Promise<void> {
-    await this.clientCommunicator.doPost<any, any>(
+    const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
         selectedUser: selectedUser.dto as UserDto,
       },
       "/user/unfollow"
     );
+
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? "Unfollow failed");
+    }
   }
 
   public async login(
@@ -159,8 +170,8 @@ export class ServerFacade {
     );
     if (response.success) {
       return {
-        token: response.token,
-        user: User.fromDto(response.user) as User,
+        token: response.AuthToken,
+        user: User.fromDto(response.UserDto) as User,
       };
     } else {
       console.error(response);
@@ -169,7 +180,14 @@ export class ServerFacade {
   }
 
   public async logout(token: string): Promise<void> {
-    await this.clientCommunicator.doPost<any, any>({ token: token }, "/logout");
+    const response = await this.clientCommunicator.doPost<any, any>(
+      { token: token },
+      "/auth/logout"
+    );
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? "Logout failed");
+    }
   }
 
   public async register(
@@ -191,13 +209,17 @@ export class ServerFacade {
   }
 
   public async postStatus(token: string, content: string): Promise<void> {
-    await this.clientCommunicator.doPost<any, any>(
+    const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
         content: content,
       },
       "/status/post"
     );
+    if (!response.success) {
+      console.error(response);
+      throw new Error(response.message ?? "Post status failed");
+    }
   }
 
   public async loadMoreFeedItems(

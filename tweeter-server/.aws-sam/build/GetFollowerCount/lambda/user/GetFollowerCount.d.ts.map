@@ -1,1 +1,1 @@
-{"version":3,"file":"GetFollowerCount.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/GetFollowerCount.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,oBAAoB,EAAE,MAAM,2DAA2D,CAAC;AAEjG,OAAO,EAAE,cAAc,EAAE,MAAM,gBAAgB,CAAC;AAGhD,eAAO,MAAM,OAAO,YACT,oBAAoB,KAC5B,QAAQ,cAAc,CAOxB,CAAC"}
+{"version":3,"file":"GetFollowerCount.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/GetFollowerCount.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,uBAAuB,EAAE,MAAM,8DAA8D,CAAC;AAEvG,OAAO,EAAE,cAAc,EAAE,MAAM,gBAAgB,CAAC;AAGhD,eAAO,MAAM,OAAO,YACT,uBAAuB,KAC/B,QAAQ,cAAc,CAOxB,CAAC"}

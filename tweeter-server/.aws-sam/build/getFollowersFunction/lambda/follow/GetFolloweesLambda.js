@@ -5,7 +5,7 @@ const FollowService_1 = require("../../model/service/FollowService");
 const LambdaHelper_1 = require("../LambdaHelper");
 const handler = async (request) => {
     const followService = new FollowService_1.FollowService();
-    return await (0, LambdaHelper_1.tryCatchWrapper)(followService.loadMoreFollowees, request, "Get Followees Lambda");
+    return await (0, LambdaHelper_1.tryCatchWrapper)(followService.loadMoreFollowees.bind(followService), request, "Get Followees Lambda");
 };
 exports.handler = handler;
 //# sourceMappingURL=GetFolloweesLambda.js.map
