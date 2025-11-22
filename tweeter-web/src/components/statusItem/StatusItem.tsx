@@ -12,6 +12,8 @@ interface Props {
 
 const StatusItem = (props: Props) => {
   const item = props.item;
+  console.log("Rendering status item:", item);
+  console.log("Item user:", item.user);
 
   const navigateToUser = useNavigateToUser();
   return (

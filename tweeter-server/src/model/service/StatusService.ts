@@ -15,11 +15,12 @@ export class StatusService {
   ): Promise<PagedStatusItemResponse> {
     // TODO: Replace with the result of calling server
     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
-      request.lastItem,
+      Status.fromDto(request.lastItem),
       request.pageSize
     );
+    const itemsDto = items.map((status) => status.dto);
     return {
-      items: items,
+      items: itemsDto,
       hasMore: hasMore,
       success: true,
       message: "Fetched feed data successfully",
@@ -34,8 +35,9 @@ export class StatusService {
       request.lastItem,
       request.pageSize
     );
+    const itemsDto = items.map((status) => status.dto);
     return {
-      items: items,
+      items: itemsDto,
       hasMore: hasMore,
       success: true,
       message: "Fetched story data successfully",

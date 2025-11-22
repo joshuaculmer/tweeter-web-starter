@@ -1,1 +1,0 @@
-{"version":3,"file":"LogoutLambda.js","sourceRoot":"","sources":["../../../src/lambda/auth/LogoutLambda.ts"],"names":[],"mappings":";;;AACA,iEAA8D;AAE9D,kDAAkD;AAE3C,MAAM,OAAO,GAAG,KAAK,EAC1B,aAA4B,EACF,EAAE;IAC5B,MAAM,WAAW,GAAG,IAAI,yBAAW,EAAE,CAAC;IACtC,OAAO,IAAA,8BAAe,EAAC,WAAW,CAAC,MAAM,EAAE,aAAa,EAAE,eAAe,CAAC,CAAC;AAC7E,CAAC,CAAC;AALW,QAAA,OAAO,WAKlB"}

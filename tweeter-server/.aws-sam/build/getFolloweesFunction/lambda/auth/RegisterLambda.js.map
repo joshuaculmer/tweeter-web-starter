@@ -1,1 +1,0 @@
-{"version":3,"file":"RegisterLambda.js","sourceRoot":"","sources":["../../../src/lambda/auth/RegisterLambda.ts"],"names":[],"mappings":";;;AACA,iEAA8D;AAE9D,kDAAkD;AAE3C,MAAM,OAAO,GAAG,KAAK,EAC1B,eAAgC,EACT,EAAE;IACzB,MAAM,WAAW,GAAG,IAAI,yBAAW,EAAE,CAAC;IACtC,OAAO,MAAM,IAAA,8BAAe,EAC1B,WAAW,CAAC,QAAQ,EACpB,eAAe,EACf,iBAAiB,CAClB,CAAC;AACJ,CAAC,CAAC;AATW,QAAA,OAAO,WASlB"}

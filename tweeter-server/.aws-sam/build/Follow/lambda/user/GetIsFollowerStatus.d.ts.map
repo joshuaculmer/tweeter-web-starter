@@ -1,1 +1,0 @@
-{"version":3,"file":"GetIsFollowerStatus.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/GetIsFollowerStatus.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,gBAAgB,CAAC;AAEjD,OAAO,EAAE,oBAAoB,EAAE,MAAM,2DAA2D,CAAC;AAGjG,eAAO,MAAM,OAAO,YACT,oBAAoB,KAC5B,QAAQ,eAAe,CAOzB,CAAC"}

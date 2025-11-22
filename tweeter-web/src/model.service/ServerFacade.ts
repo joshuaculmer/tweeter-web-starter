@@ -230,7 +230,11 @@ export class ServerFacade {
       any
     >(request, "/status/loadmorefeeditems");
 
-    return [response.items, response.hasMore];
+    // convert status dtos to status objects
+    const statusItems: Status[] = response.items.map(
+      (StatusDto: any) => Status.fromDto(StatusDto) as Status
+    );
+    return [statusItems, response.hasMore];
   }
 
   public async loadMoreStoryItems(
@@ -241,6 +245,10 @@ export class ServerFacade {
       any
     >(request, "/status/loadmorestoryitems");
 
-    return [response.items, response.hasMore];
+    // convert status dtos to status objects
+    const statusItems: Status[] = response.items.map(
+      (StatusDto: any) => Status.fromDto(StatusDto) as Status
+    );
+    return [statusItems, response.hasMore];
   }
 }

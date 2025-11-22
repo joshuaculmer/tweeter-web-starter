@@ -1,1 +1,0 @@
-{"version":3,"file":"GetFollowerCount.js","sourceRoot":"","sources":["../../../src/lambda/user/GetFollowerCount.ts"],"names":[],"mappings":";;;AACA,iEAA8D;AAE9D,kDAAkD;AAE3C,MAAM,OAAO,GAAG,KAAK,EAC1B,OAAgC,EACP,EAAE;IAC3B,MAAM,WAAW,GAAG,IAAI,yBAAW,EAAE,CAAC;IACtC,OAAO,MAAM,IAAA,8BAAe,EAC1B,WAAW,CAAC,gBAAgB,EAC5B,OAAO,EACP,2BAA2B,CAC5B,CAAC;AACJ,CAAC,CAAC;AATW,QAAA,OAAO,WASlB"}

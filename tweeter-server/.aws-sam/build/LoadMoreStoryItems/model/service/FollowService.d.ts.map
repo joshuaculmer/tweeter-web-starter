@@ -1,1 +1,0 @@
-{"version":3,"file":"FollowService.d.ts","sourceRoot":"","sources":["../../../src/model/service/FollowService.ts"],"names":[],"mappings":"AAAA,OAAO,EAKL,qBAAqB,EACrB,oBAAoB,EACrB,MAAM,gBAAgB,CAAC;AAExB,qBAAa,aAAa;IACX,iBAAiB,CAC5B,OAAO,EAAE,oBAAoB,GAC5B,OAAO,CAAC,qBAAqB,CAAC;IAQpB,iBAAiB,CAC5B,OAAO,EAAE,oBAAoB,GAC5B,OAAO,CAAC,qBAAqB,CAAC;YASnB,WAAW;CAkB1B"}

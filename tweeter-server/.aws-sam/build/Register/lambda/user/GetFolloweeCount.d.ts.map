@@ -1,1 +1,0 @@
-{"version":3,"file":"GetFolloweeCount.d.ts","sourceRoot":"","sources":["../../../src/lambda/user/GetFolloweeCount.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,uBAAuB,EAAE,cAAc,EAAE,MAAM,gBAAgB,CAAC;AAGzE,eAAO,MAAM,OAAO,YACT,uBAAuB,KAC/B,QAAQ,cAAc,CAOxB,CAAC"}
