@@ -3,8 +3,9 @@ import { StatusService } from "../../model/service/StatusService";
 import { PostStatusRequest } from "tweeter-shared/src/model/net/request/PostStatusRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
 import { FakeDataStatusDAO } from "../../model/dao/FakeDataDao/FakeStatusDAO";
+import { StatusDAO } from "../../model/dao/StatusDAO";
 
-const statusdao = new FakeDataStatusDAO();
+const statusdao: StatusDAO = new FakeDataStatusDAO();
 export const handler = async (
   postStatusRequest: PostStatusRequest
 ): Promise<TweeterResponse> => {

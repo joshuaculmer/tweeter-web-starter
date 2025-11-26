@@ -17,10 +17,10 @@ export class StatusService {
     this.dao = dao;
   }
 
-  public async loadMoreFeedItems(
+  public loadMoreFeedItems = async (
     request: LoadMoreFeedItemsRequest
-  ): Promise<PagedStatusItemResponse> {
-    const [items, hasMore] = this.dao.LoadMoreStoryItems(
+  ): Promise<PagedStatusItemResponse> => {
+    const [items, hasMore] = await this.dao.LoadMoreStoryItems(
       Status.fromDto(request.lastItem),
       request.pageSize
     );
@@ -30,12 +30,12 @@ export class StatusService {
       success: true,
       message: "Fetched feed data successfully",
     };
-  }
+  };
 
-  public async loadMoreStoryItems(
+  public loadMoreStoryItems = async (
     request: LoadMoreStoryItemsRequest
-  ): Promise<PagedStatusItemResponse> {
-    const [items, hasMore] = this.dao.LoadMoreStoryItems(
+  ): Promise<PagedStatusItemResponse> => {
+    const [items, hasMore] = await this.dao.LoadMoreStoryItems(
       request.lastItem,
       request.pageSize
     );
@@ -45,12 +45,12 @@ export class StatusService {
       success: true,
       message: "Fetched story data successfully",
     };
-  }
+  };
 
-  public async postStatus(
+  public postStatus = async (
     request: PostStatusRequest
-  ): Promise<TweeterResponse> {
-    this.dao.PostStatus(request.token, request.newStatus);
+  ): Promise<TweeterResponse> => {
+    await this.dao.PostStatus(request.token, request.newStatus);
     return { success: true, message: "Status posted successfully" };
-  }
+  };
 }

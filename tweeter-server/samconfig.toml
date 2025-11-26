@@ -2,7 +2,6 @@ version = 0.1
 
 [default.deploy.parameters]
 stack_name = "tweeter-server"
-s3_bucket = "cs340-joshuadculmer"
 confirm_changeset = true
 capabilities = "CAPABILITY_NAMED_IAM"
 image_repositories = []
