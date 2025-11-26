@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken, User, UserDto } from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "./ServerFacade";
 
@@ -8,7 +8,7 @@ export class FollowService implements Service {
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
-    lastItem: User | null
+    lastItem: UserDto | null
   ): Promise<[User[], boolean]> {
     return this.server.getMoreFollowees({
       token: authToken.token,
@@ -22,7 +22,7 @@ export class FollowService implements Service {
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
-    lastItem: User | null
+    lastItem: UserDto | null
   ): Promise<[User[], boolean]> {
     return this.server.getMoreFollowers({
       token: authToken.token,

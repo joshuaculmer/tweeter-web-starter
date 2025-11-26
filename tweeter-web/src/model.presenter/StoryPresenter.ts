@@ -16,7 +16,7 @@ export class StoryPresenter extends StatusItemPresenter {
       authToken,
       userAlias,
       PAGE_SIZE,
-      this.lastItem
+      this.lastItem?.dto ?? null
     );
   }
 }

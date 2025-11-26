@@ -225,6 +225,13 @@ export class ServerFacade {
   public async loadMoreFeedItems(
     request: LoadMoreFeedItemsRequest
   ): Promise<[Status[], boolean]> {
+    if (request.lastItem == null) {
+      console.log(
+        "last item was set as null by the time it got to serverfacade"
+      );
+    } else {
+      console.log("last item is in fact not null" + request.lastItem.post);
+    }
     const response = await this.clientCommunicator.doPost<
       LoadMoreFeedItemsRequest,
       any

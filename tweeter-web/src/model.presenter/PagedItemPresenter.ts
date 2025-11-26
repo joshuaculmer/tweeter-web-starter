@@ -56,7 +56,7 @@ export abstract class PagedItemPresenter<
       const [newItems, hasMore] = await this.getMoreItems(authToken, alias);
 
       this.hasMoreItems = hasMore;
-      this.lastItem =
+      this._lastItem =
         newItems.length > 0 ? newItems[newItems.length - 1] : null;
       this.view.addItems(newItems);
     }, this.itemDescription());

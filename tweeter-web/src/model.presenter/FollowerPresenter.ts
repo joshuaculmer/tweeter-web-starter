@@ -16,7 +16,7 @@ export class FollowerPresenter extends UserItemPresenter {
       authToken,
       userAlias,
       PAGE_SIZE,
-      this.lastItem
+      this.lastItem?.dto ?? null
     );
   }
 }

@@ -21,7 +21,7 @@ export class StatusService {
     request: LoadMoreFeedItemsRequest
   ): Promise<PagedStatusItemResponse> => {
     const [items, hasMore] = await this.dao.LoadMoreStoryItems(
-      Status.fromDto(request.lastItem),
+      request.lastItem,
       request.pageSize
     );
     return {

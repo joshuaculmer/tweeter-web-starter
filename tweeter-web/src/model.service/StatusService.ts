@@ -1,6 +1,7 @@
 import { AuthToken, Status } from "tweeter-shared";
 import { Service } from "./Service";
 import { ServerFacade } from "./ServerFacade";
+import { StatusDto } from "tweeter-shared/dist/model/dto/StatusDto";
 
 export class StatusService implements Service {
   private server = new ServerFacade();
@@ -8,8 +9,9 @@ export class StatusService implements Service {
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
-    lastItem: Status | null
+    lastItem: StatusDto | null
   ): Promise<[Status[], boolean]> {
+    console.log("in status service, last item is:" + lastItem?.post);
     return this.server.loadMoreFeedItems({
       token: authToken.token,
       userAlias: userAlias,
@@ -22,7 +24,7 @@ export class StatusService implements Service {
     authToken: AuthToken,
     userAlias: string,
     pageSize: number,
-    lastItem: Status | null
+    lastItem: StatusDto | null
   ): Promise<[Status[], boolean]> {
     return this.server.loadMoreStoryItems({
       token: authToken.token,

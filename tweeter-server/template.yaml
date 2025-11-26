@@ -116,7 +116,7 @@ Resources:
           #
           # ADD MORE ENDPOINT DEFINITIONS HERE
           #
-          
+
           /followees/get:
             post:
               description: "Retrieves the list of users that the authenticated user is following"
@@ -130,7 +130,7 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
-          
+
           /followers/get:
             post:
               description: "Retrieves the list of users following the authenticated user"
@@ -144,7 +144,7 @@ Resources:
                 requestTemplates: *commonRequestTemplates
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
-          
+
           /user/get:
             post:
               description: "Retrieves user profile information"
@@ -390,7 +390,7 @@ Resources:
     Properties:
       FunctionName: getUserFunction
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/GetuserLambda.handler # Handler code here
+      Handler: lambda/user/GetUserLambda.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
