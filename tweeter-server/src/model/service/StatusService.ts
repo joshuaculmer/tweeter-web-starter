@@ -8,19 +8,24 @@ import {
   LoadMoreStoryItemsRequest,
   PostStatusRequest,
 } from "tweeter-shared";
+import { StatusDAO } from "../dao/StatusDAO";
 
 export class StatusService {
+  private dao: StatusDAO;
+
+  public constructor(dao: StatusDAO) {
+    this.dao = dao;
+  }
+
   public async loadMoreFeedItems(
     request: LoadMoreFeedItemsRequest
   ): Promise<PagedStatusItemResponse> {
-    // TODO: Replace with the result of calling server
-    const [items, hasMore] = FakeData.instance.getPageOfStatuses(
+    const [items, hasMore] = this.dao.LoadMoreStoryItems(
       Status.fromDto(request.lastItem),
       request.pageSize
     );
-    const itemsDto = items.map((status) => status.dto);
     return {
-      items: itemsDto,
+      items: items,
       hasMore: hasMore,
       success: true,
       message: "Fetched feed data successfully",
@@ -30,14 +35,12 @@ export class StatusService {
   public async loadMoreStoryItems(
     request: LoadMoreStoryItemsRequest
   ): Promise<PagedStatusItemResponse> {
-    // TODO: Replace with the result of calling server
-    const [items, hasMore] = FakeData.instance.getPageOfStatuses(
+    const [items, hasMore] = this.dao.LoadMoreStoryItems(
       request.lastItem,
       request.pageSize
     );
-    const itemsDto = items.map((status) => status.dto);
     return {
-      items: itemsDto,
+      items: items,
       hasMore: hasMore,
       success: true,
       message: "Fetched story data successfully",
@@ -47,9 +50,7 @@ export class StatusService {
   public async postStatus(
     request: PostStatusRequest
   ): Promise<TweeterResponse> {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-    // TODO: Call the server to post the status
+    this.dao.PostStatus(request.token, request.newStatus);
     return { success: true, message: "Status posted successfully" };
   }
 }
