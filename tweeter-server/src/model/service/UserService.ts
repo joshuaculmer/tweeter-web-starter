@@ -1,6 +1,4 @@
 import {
-  AuthToken,
-  User,
   FakeData,
   UserDto,
   TweeterResponse,
@@ -14,19 +12,24 @@ import {
   GetFollowerCountRequest,
   GetFolloweeCountRequest,
 } from "tweeter-shared";
+import { UserDAO } from "../dao/UserDAO";
 
 export class UserService {
-  public async getUser(request: GetUserRequest): Promise<UserResponse> {
-    // TODO: Replace with the result of calling server
-    const response: User | null = FakeData.instance.findUserByAlias(
-      request.userAlias
-    );
+  private dao: UserDAO;
+  public constructor(dao: UserDAO) {
+    this.dao = dao;
+  }
+  public getUser = async (request: GetUserRequest): Promise<UserResponse> => {
+    const user: UserDto | null = this.dao.GetUser(request.userAlias);
+    if (user === null) {
+      throw new Error("User not found");
+    }
     return {
-      user: response ? response.dto : null,
+      user: user,
       success: true,
       message: "Fetched user successfully",
     };
-  }
+  };
 
   public async getIsFollowerStatus(
     request: GetIsFollowerRequest
