@@ -7,20 +7,20 @@ export interface FollowDAO extends DAO {
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
-  ): PagedUserItemResponse;
+  ): Promise<[UserDto[], boolean]>;
   LoadMoreFollowees(
     token: string,
     userAlias: string,
     pageSize: number,
     lastItem: UserDto | null
-  ): PagedUserItemResponse;
+  ): Promise<[UserDto[], boolean]>;
   GetIsFollowerStatus(
     token: string,
     user: UserDto,
     selectedUser: UserDto
-  ): boolean;
-  GetFollowerCount(alias: string): number;
-  GetFolloweeCount(alias: string): number;
-  Follow(token: string, userToFollow: UserDto): boolean;
-  Unfollow(token: string, userToFollow: UserDto): boolean;
+  ): Promise<boolean>;
+  GetFollowerCount(alias: string): Promise<number>;
+  GetFolloweeCount(alias: string): Promise<number>;
+  Follow(token: string, userToFollow: UserDto): Promise<boolean>;
+  Unfollow(token: string, userToFollow: UserDto): Promise<boolean>;
 }

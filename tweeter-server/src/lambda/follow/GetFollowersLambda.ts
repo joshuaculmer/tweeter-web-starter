@@ -2,11 +2,12 @@ import { PagedUserItemResponse } from "tweeter-shared";
 import { PagedUserItemRequest } from "tweeter-shared/src/model/net/request/PagedUserItemRequest";
 import { FollowService } from "../../model/service/FollowService";
 import { tryCatchWrapper } from "../LambdaHelper";
-
+import { FakeFollowDAO } from "../../model/dao/FakeDataDao/FakeFollowDAO";
+const followDao = new FakeFollowDAO();
 export const handler = async (
   request: PagedUserItemRequest
 ): Promise<PagedUserItemResponse> => {
-  const followService = new FollowService();
+  const followService = new FollowService(followDao);
   return await tryCatchWrapper(
     followService.loadMoreFollowers.bind(followService),
     request,

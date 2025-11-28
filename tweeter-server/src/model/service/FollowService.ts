@@ -1,5 +1,4 @@
 import {
-  AuthToken,
   User,
   FakeData,
   UserDto,
@@ -14,54 +13,61 @@ import {
   TweeterResponse,
 } from "tweeter-shared";
 import { UnfollowRequest } from "tweeter-shared/src/model/net/request/UnfollowRequest";
+import { FollowDAO } from "../dao/FollowDAO";
 
 export class FollowService {
+  private dao: FollowDAO;
+
+  public constructor(dao: FollowDAO) {
+    this.dao = dao;
+  }
+
   public async loadMoreFollowees(
     request: PagedUserItemRequest
   ): Promise<PagedUserItemResponse> {
-    return await this.getFakeData(
-      request.lastItem,
+    const [items, hasMore] = await this.dao.LoadMoreFollowees(
+      request.token,
+      request.userAlias,
       request.pageSize,
-      request.userAlias
+      request.lastItem
     );
+
+    return {
+      items: items,
+      hasMore: hasMore,
+      success: true,
+      message: "Fetched followee data successfully",
+    };
   }
 
   public async loadMoreFollowers(
     request: PagedUserItemRequest
   ): Promise<PagedUserItemResponse> {
-    // TODO: Replace with the result of calling server
-    return await this.getFakeData(
-      request.lastItem,
+    const [items, hasMore] = await this.dao.LoadMoreFollowers(
+      request.token,
+      request.userAlias,
       request.pageSize,
-      request.userAlias
+      request.lastItem
     );
-  }
 
-  private async getFakeData(
-    lastItem: UserDto | null,
-    pageSize: number,
-    userAlias: string
-  ): Promise<PagedUserItemResponse> {
-    const [items, hasMore] = FakeData.instance.getPageOfUsers(
-      User.fromDto(lastItem),
-      pageSize,
-      userAlias
-    );
-    const dtos = items.map((user) => user.dto);
     return {
-      items: dtos,
+      items: items,
       hasMore: hasMore,
       success: true,
-      message: "Fetched follow data successfully",
+      message: "Fetched follower data successfully",
     };
   }
 
   public async getIsFollowerStatus(
     request: GetIsFollowerRequest
   ): Promise<BooleanResponse> {
-    // TODO: Replace with the result of calling server
+    const isFollower = await this.dao.GetIsFollowerStatus(
+      request.token,
+      request.user,
+      request.selectedUser
+    );
     return {
-      bool: FakeData.instance.isFollower(),
+      bool: isFollower,
       success: true,
       message: "Fetched is follower status successfully",
     };
@@ -70,8 +76,7 @@ export class FollowService {
   public async getFolloweeCount(
     request: GetFolloweeCountRequest
   ): Promise<NumberResponse> {
-    // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFolloweeCount(request.alias);
+    const count = await this.dao.GetFolloweeCount(request.alias);
     return {
       success: true,
       message: "Fetched followee count successfully",
@@ -82,8 +87,7 @@ export class FollowService {
   public async getFollowerCount(
     request: GetFollowerCountRequest
   ): Promise<NumberResponse> {
-    // TODO: Replace with the result of calling server
-    const count = await FakeData.instance.getFollowerCount(request.alias);
+    const count = await this.dao.GetFollowerCount(request.alias);
     return {
       success: true,
       message: "Fetched follower count successfully",
@@ -92,16 +96,21 @@ export class FollowService {
   }
 
   public async unfollow(request: UnfollowRequest): Promise<TweeterResponse> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-    // TODO: Call the server
+    const success = await this.dao.Unfollow(
+      request.token,
+      request.userToUnfollow
+    );
+    if (success === false) {
+      return { success: false, message: "Failed to unfollow user" };
+    }
     return { success: true, message: "Unfollowed successfully" };
   }
 
   public async follow(request: FollowRequest): Promise<TweeterResponse> {
-    // Pause so we can see the follow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-    // TODO: Call the server
+    const success = await this.dao.Follow(request.token, request.userToFollow);
+    if (success === false) {
+      return { success: false, message: "Failed to follow user" };
+    }
     return { success: true, message: "Followed successfully" };
   }
 }
