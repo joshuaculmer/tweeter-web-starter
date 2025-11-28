@@ -159,7 +159,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /user/followerstatus/get:
+          /follow/followerstatus/get:
             post:
               description: "Checks if the authenticated user is following a specified user"
               consumes: *commonConsumes
@@ -173,7 +173,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /user/followerCount/get:
+          /follow/followerCount/get:
             post:
               description: "Retrieves the total number of followers for a user"
               consumes: *commonConsumes
@@ -187,7 +187,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /user/followeeCount/get:
+          /follow/followeeCount/get:
             post:
               description: "Retrieves the total number of users that a user is following"
               consumes: *commonConsumes
@@ -201,7 +201,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /user/follow:
+          /follow/follow:
             post:
               description: "Follows a specified user"
               consumes: *commonConsumes
@@ -215,7 +215,7 @@ Resources:
                 responses: *commonAmazonResponses
               responses: *commonSwaggerResponses
 
-          /user/unfollow:
+          /follow/unfollow:
             post:
               description: "Unfollows a specified user"
               consumes: *commonConsumes
@@ -405,14 +405,14 @@ Resources:
     Properties:
       FunctionName: GetIsFollowerStatus
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/GetIsFollowerStatus.handler # Handler code here
+      Handler: lambda/follow/GetIsFollowerStatus.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/followerstatus/get
+            Path: /follow/followerstatus/get
             Method: POST # Keep all of them POST
 
   GetFollowerCount:
@@ -420,14 +420,14 @@ Resources:
     Properties:
       FunctionName: GetFollowerCount
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/GetFollowerCount.handler # Handler code here
+      Handler: lambda/follow/GetFollowerCount.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/followerCount/get
+            Path: /follow/followerCount/get
             Method: POST # Keep all of them POST
 
   GetFolloweeCount:
@@ -435,14 +435,14 @@ Resources:
     Properties:
       FunctionName: GetFolloweeCount
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/GetFolloweeCount.handler # Handler code here
+      Handler: lambda/follow/GetFolloweeCount.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/followeeCount/get
+            Path: /follow/followeeCount/get
             Method: POST # Keep all of them POST
 
   Follow:
@@ -450,14 +450,14 @@ Resources:
     Properties:
       FunctionName: Follow
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/Follow.handler # Handler code here
+      Handler: lambda/follow/Follow.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/follow
+            Path: /follow/follow
             Method: POST # Keep all of them POST
 
   Unfollow:
@@ -465,14 +465,14 @@ Resources:
     Properties:
       FunctionName: Unfollow
       ##### Modify Handler property to match your code.
-      Handler: lambda/user/Unfollow.handler # Handler code here
+      Handler: lambda/follow/Unfollow.handler # Handler code here
       Policies: *commonPolicies
       Events:
         PostApi:
           Type: Api
           Properties:
             RestApiId: !Ref tweeterApi
-            Path: /user/unfollow
+            Path: /follow/unfollow
             Method: POST # Keep all of them POST
 
   Login:

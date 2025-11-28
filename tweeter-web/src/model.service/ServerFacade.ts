@@ -104,7 +104,7 @@ export class ServerFacade {
         user: user.dto as UserDto,
         selectedUser: selectedUser.dto as UserDto,
       },
-      "/user/followerstatus/get"
+      "/follow/followerstatus/get"
     );
     if (response.success) {
       return response;
@@ -117,7 +117,7 @@ export class ServerFacade {
   public async getFollowerCount(alias: string): Promise<number> {
     const response = await this.clientCommunicator.doPost<any, any>(
       { userAlias: alias },
-      "/user/followerCount/get"
+      "/follow/followerCount/get"
     );
     return response.Number;
   }
@@ -125,7 +125,7 @@ export class ServerFacade {
   public async getFolloweeCount(alias: string): Promise<number> {
     const response = await this.clientCommunicator.doPost<any, any>(
       { userAlias: alias },
-      "/user/followeeCount/get"
+      "/follow/followeeCount/get"
     );
     return response.Number;
   }
@@ -136,7 +136,7 @@ export class ServerFacade {
         token: token,
         selectedUser: selectedUser.dto as UserDto,
       },
-      "/user/follow"
+      "/follow/follow"
     );
 
     if (!response.success) {
@@ -151,7 +151,7 @@ export class ServerFacade {
         token: token,
         selectedUser: selectedUser.dto as UserDto,
       },
-      "/user/unfollow"
+      "/follow/unfollow"
     );
 
     if (!response.success) {

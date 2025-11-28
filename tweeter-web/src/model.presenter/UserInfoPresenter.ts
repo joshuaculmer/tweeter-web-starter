@@ -1,7 +1,7 @@
-import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model.service/UserService";
+import { AuthToken, Follow, User } from "tweeter-shared";
 import { useMessageActions } from "./messagehooks";
 import { Presenter, View } from "./Presenter";
+import { FollowService } from "../model.service/FollowService";
 
 export interface UserInfoView extends View {
   setIsFollower: (value: boolean) => void;
@@ -11,12 +11,12 @@ export interface UserInfoView extends View {
 }
 
 export class UserInfoPresenter extends Presenter<UserInfoView> {
-  private userService: UserService;
+  private followService: FollowService;
   private useMessageAct = useMessageActions();
 
   public constructor(view: UserInfoView) {
     super(view);
-    this.userService = new UserService();
+    this.followService = new FollowService();
   }
 
   public async getIsFollowerStatus(
@@ -24,21 +24,25 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     user: User,
     selectedUser: User
   ): Promise<boolean> {
-    return this.userService.getIsFollowerStatus(authToken, user, selectedUser);
+    return this.followService.getIsFollowerStatus(
+      authToken,
+      user,
+      selectedUser
+    );
   }
 
   public async getFolloweeCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    return this.userService.getFolloweeCount(authToken, user);
+    return this.followService.getFolloweeCount(authToken, user);
   }
 
   public async getFollowerCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    return this.userService.getFollowerCount(authToken, user);
+    return this.followService.getFollowerCount(authToken, user);
   }
 
   public async setIsFollowerStatus(
@@ -73,7 +77,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    await this.userService.unfollow(authToken, userToUnfollow);
+    await this.followService.unfollow(authToken, userToUnfollow);
 
     const followerCount = await this.getFollowerCount(
       authToken,
@@ -91,7 +95,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    await this.userService.follow(authToken, userToFollow);
+    await this.followService.follow(authToken, userToFollow);
 
     const followerCount = await this.getFollowerCount(authToken, userToFollow);
     const followeeCount = await this.getFolloweeCount(authToken, userToFollow);

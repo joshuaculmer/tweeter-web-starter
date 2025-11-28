@@ -1,17 +1,13 @@
 import { TweeterResponse } from "tweeter-shared";
 import { UserService } from "../../model/service/UserService";
-import { UnfollowRequest } from "tweeter-shared/src/model/net/request/UnfollowRequest";
+import { FollowRequest } from "tweeter-shared/src/model/net/request/FollowRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
 import { FakeUserDAO } from "../../model/dao/FakeDataDao/FakeUserDAO";
+import { FollowService } from "../../model/service/FollowService";
 
-const userDao = new FakeUserDAO();
 export const handler = async (
-  request: UnfollowRequest
+  request: FollowRequest
 ): Promise<TweeterResponse> => {
-  const userService = new UserService(userDao);
-  return await tryCatchWrapper(
-    userService.unfollow,
-    request,
-    "Unfollow Lambda"
-  );
+  const userService = new FollowService();
+  return await tryCatchWrapper(userService.follow, request, "Follow Lambda");
 };
