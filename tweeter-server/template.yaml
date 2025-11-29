@@ -566,10 +566,6 @@ Resources:
             Method: POST # Keep all of them POST
 
   #
-  # ADD MORE WEB API LAMBDA DEFINITIONS HERE
-  #
-
-  #
   # SQS Queue Lambda Functions
   #
 
@@ -614,6 +610,54 @@ Resources:
           Projection:
             ProjectionType: ALL
 
-  #
-  # ADD MORE TABLE DEFINITIONS HERE
-  #
+  authTokenTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: authtoken
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: S
+        - AttributeName: authtoken
+          AttributeType: S
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: timestamp
+        Enabled: true
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: authtoken_index
+          KeySchema:
+            - AttributeName: authtoken
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  authenticationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: authentication
+      AttributeDefinitions:
+        - AttributeName: username
+          AttributeType: S
+      KeySchema:
+        - AttributeName: username
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  # profileImageBucket:
+  #   Type: AWS::S3::Bucket
+  #   Properties:
+  #     BucketName: !Sub '${AWS::StackName}-profile-images'
+  #     CorsConfiguration:
+  #       CorsRules:
+  #         - AllowedHeaders:
+  #             - '*'
+  #           AllowedMethods:
+  #             - GET
+  #             - PUT
+  #             - POST
+  #           AllowedOrigins:
+  #             - '*'
+  #           MaxAge: 3000

@@ -3,8 +3,9 @@ import { AuthService } from "../../model/service/AuthService";
 import { LogoutRequest } from "tweeter-shared/src/model/net/request/LogoutRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
 import { FakeAuthDAO } from "../../model/dao/FakeDataDao/FakeAuthDAO";
+import { DynamoAuthDAO } from "../../model/dao/DynamoDao/DynamoAuthDAO";
 
-const authDao = new FakeAuthDAO();
+const authDao = new DynamoAuthDAO();
 export const handler = async (
   LogoutRequest: LogoutRequest
 ): Promise<TweeterResponse> => {

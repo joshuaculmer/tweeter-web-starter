@@ -2,7 +2,10 @@ import { AuthToken, User, UserDto } from "tweeter-shared";
 import { DAO } from "./DAO";
 
 export interface AuthDAO extends DAO {
-  login(alias: string, password: string): { User: User; AuthToken: AuthToken };
+  login(
+    alias: string,
+    password: string
+  ): Promise<{ User: User; AuthToken: AuthToken }>;
   register(
     firstName: string,
     lastName: string,
@@ -10,6 +13,6 @@ export interface AuthDAO extends DAO {
     password: string,
     userImageBytes: string,
     imageFileExtension: string
-  ): { User: User; AuthToken: AuthToken };
+  ): Promise<{ User: User; AuthToken: AuthToken }>;
   logout(token: string): Promise<boolean>;
 }

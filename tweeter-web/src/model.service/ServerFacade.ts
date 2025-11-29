@@ -165,7 +165,7 @@ export class ServerFacade {
     password: string
   ): Promise<{ token: AuthToken; user: User }> {
     const response = await this.clientCommunicator.doPost<any, any>(
-      { userAlias: alias, password: password },
+      { alias: alias, password: password },
       "/auth/login"
     );
     if (response.success) {

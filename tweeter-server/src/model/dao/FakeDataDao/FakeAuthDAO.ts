@@ -2,7 +2,10 @@ import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
 import { AuthDAO } from "../AuthDAO";
 
 export class FakeAuthDAO implements AuthDAO {
-  login(alias: string, password: string): { User: User; AuthToken: AuthToken } {
+  async login(
+    alias: string,
+    password: string
+  ): Promise<{ User: User; AuthToken: AuthToken }> {
     const user = FakeData.instance.firstUser;
     if (user === null) {
       throw new Error("Invalid alias or password");
@@ -12,14 +15,14 @@ export class FakeAuthDAO implements AuthDAO {
       AuthToken: FakeData.instance.authToken,
     };
   }
-  register(
+  async register(
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
     userImageBytes: string,
     imageFileExtension: string
-  ): { User: User; AuthToken: AuthToken } {
+  ): Promise<{ User: User; AuthToken: AuthToken }> {
     const user = FakeData.instance.firstUser;
 
     if (user === null) {

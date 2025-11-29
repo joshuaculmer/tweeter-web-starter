@@ -15,7 +15,7 @@ export class AuthService {
     this.dao = dao;
   }
   public login = async (request: LoginRequest): Promise<AuthResponse> => {
-    const { User: user, AuthToken } = this.dao.login(
+    const { User: user, AuthToken } = await this.dao.login(
       request.alias,
       request.password
     );
@@ -37,7 +37,7 @@ export class AuthService {
     ).toString("base64");
 
     // call the DAO to register the user
-    const { User: user, AuthToken: authToken } = this.dao.register(
+    const { User: user, AuthToken: authToken } = await this.dao.register(
       request.firstName,
       request.lastName,
       request.alias,
