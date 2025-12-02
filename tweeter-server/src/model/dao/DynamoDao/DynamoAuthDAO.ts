@@ -10,31 +10,78 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import * as bcrypt from "bcryptjs";
+import {
+  ObjectCannedACL,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 export class DynamoAuthDAO implements AuthDAO {
   private authTableName = "authentication";
   private authTokenTableName = "authtoken";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+  private BUCKET = "tweeter-server-profile-images-2";
+  private REGION = "us-east-1";
+
+  private putImage = async (
+    fileName: string,
+    imageStringBase64Encoded: string
+  ): Promise<string> => {
+    console.log("Backend - base64 length:", imageStringBase64Encoded.length);
+    console.log(
+      "Backend - base64 first 50 chars:",
+      imageStringBase64Encoded.substring(0, 50)
+    );
+    let decodedImageBuffer: Buffer = Buffer.from(
+      imageStringBase64Encoded,
+      "base64"
+    );
+
+    console.log("Backend - decoded buffer length:", decodedImageBuffer.length);
+
+    const s3Params = {
+      Bucket: this.BUCKET,
+      Key: fileName,
+      Body: decodedImageBuffer,
+      ContentType: "image/png",
+      ACL: ObjectCannedACL.public_read,
+    };
+    const c = new PutObjectCommand(s3Params);
+    const client = new S3Client({ region: this.REGION });
+    try {
+      await client.send(c);
+      return `https://${this.BUCKET}.s3.${this.REGION}.amazonaws.com/${fileName}`;
+    } catch (error) {
+      throw Error("s3 put image failed with: " + error);
+    }
+  };
 
   async register(
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
-    imageUrl: string,
+    userImageBytes: string,
     imageFileExtension: string
   ): Promise<{ User: User; AuthToken: AuthToken }> {
+    // Decode once to get back to the original base64
+    const actualBase64 = Buffer.from(userImageBytes, "base64").toString("utf8");
+
     // Hash the password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user record in authentication table
+    const imageUrl = await this.putImage(
+      alias + Date.now().toString() + "." + imageFileExtension,
+      actualBase64
+    );
+
+    // Create user record in authentication table with S3 URL
     const userItem = {
       username: { S: alias },
       password_hash: { S: passwordHash },
       first_name: { S: firstName },
       last_name: { S: lastName },
       image_url: { S: imageUrl },
-      image_file_extension: { S: imageFileExtension },
     };
 
     await this.client.send(
@@ -62,9 +109,8 @@ export class DynamoAuthDAO implements AuthDAO {
       })
     );
 
-    // Create and return User object
+    // Create and return User object with S3 URL
     const user = new User(firstName, lastName, alias, imageUrl);
-
     return { User: user, AuthToken: authToken };
   }
 

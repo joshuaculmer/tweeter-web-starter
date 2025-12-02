@@ -336,6 +336,45 @@ Resources:
       RetentionPolicy: DELETE
 
   #
+  # S3 buckets
+  #
+
+  profileImageBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: "tweeter-server-profile-images-2"
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: false
+        BlockPublicPolicy: false
+        IgnorePublicAcls: false
+        RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+            AllowedOrigins:
+              - "*"
+            MaxAge: 3000
+
+  profileImageBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref profileImageBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+            Resource:
+              - !Sub "${profileImageBucket.Arn}/*"
+
+  #
   # Web API Lambda functions
   #
 
@@ -645,19 +684,3 @@ Resources:
         - AttributeName: username
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-
-  # profileImageBucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     BucketName: !Sub '${AWS::StackName}-profile-images'
-  #     CorsConfiguration:
-  #       CorsRules:
-  #         - AllowedHeaders:
-  #             - '*'
-  #           AllowedMethods:
-  #             - GET
-  #             - PUT
-  #             - POST
-  #           AllowedOrigins:
-  #             - '*'
-  #           MaxAge: 3000

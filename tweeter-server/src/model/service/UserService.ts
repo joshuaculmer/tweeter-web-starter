@@ -1,8 +1,4 @@
-import {
-  UserDto,
-  UserResponse,
-  GetUserRequest,
-} from "tweeter-shared";
+import { UserDto, UserResponse, GetUserRequest } from "tweeter-shared";
 import { UserDAO } from "../dao/UserDAO";
 
 export class UserService {
@@ -11,7 +7,7 @@ export class UserService {
     this.dao = dao;
   }
   public getUser = async (request: GetUserRequest): Promise<UserResponse> => {
-    const user: UserDto | null = this.dao.GetUser(request.userAlias);
+    const user: UserDto | null = await this.dao.GetUser(request.userAlias);
     if (user === null) {
       throw new Error("User not found");
     }
@@ -21,5 +17,4 @@ export class UserService {
       message: "Fetched user successfully",
     };
   };
-
 }
