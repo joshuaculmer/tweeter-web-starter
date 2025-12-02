@@ -22,9 +22,9 @@ export class FollowService {
     this.dao = dao;
   }
 
-  public async loadMoreFollowees(
+  public loadMoreFollowees = async (
     request: PagedUserItemRequest
-  ): Promise<PagedUserItemResponse> {
+  ): Promise<PagedUserItemResponse> => {
     const [items, hasMore] = await this.dao.LoadMoreFollowees(
       request.token,
       request.userAlias,
@@ -38,11 +38,11 @@ export class FollowService {
       success: true,
       message: "Fetched followee data successfully",
     };
-  }
+  };
 
-  public async loadMoreFollowers(
+  public loadMoreFollowers = async (
     request: PagedUserItemRequest
-  ): Promise<PagedUserItemResponse> {
+  ): Promise<PagedUserItemResponse> => {
     const [items, hasMore] = await this.dao.LoadMoreFollowers(
       request.token,
       request.userAlias,
@@ -56,11 +56,11 @@ export class FollowService {
       success: true,
       message: "Fetched follower data successfully",
     };
-  }
+  };
 
-  public async getIsFollowerStatus(
+  public getIsFollowerStatus = async (
     request: GetIsFollowerRequest
-  ): Promise<BooleanResponse> {
+  ): Promise<BooleanResponse> => {
     const isFollower = await this.dao.GetIsFollowerStatus(
       request.token,
       request.user,
@@ -71,31 +71,33 @@ export class FollowService {
       success: true,
       message: "Fetched is follower status successfully",
     };
-  }
+  };
 
-  public async getFolloweeCount(
+  public getFolloweeCount = async (
     request: GetFolloweeCountRequest
-  ): Promise<NumberResponse> {
+  ): Promise<NumberResponse> => {
     const count = await this.dao.GetFolloweeCount(request.alias);
     return {
       success: true,
       message: "Fetched followee count successfully",
       Number: count,
     };
-  }
+  };
 
-  public async getFollowerCount(
+  public getFollowerCount = async (
     request: GetFollowerCountRequest
-  ): Promise<NumberResponse> {
+  ): Promise<NumberResponse> => {
     const count = await this.dao.GetFollowerCount(request.alias);
     return {
       success: true,
       message: "Fetched follower count successfully",
       Number: count,
     };
-  }
+  };
 
-  public async unfollow(request: UnfollowRequest): Promise<TweeterResponse> {
+  public unfollow = async (
+    request: UnfollowRequest
+  ): Promise<TweeterResponse> => {
     const success = await this.dao.Unfollow(
       request.token,
       request.userToUnfollow
@@ -104,13 +106,13 @@ export class FollowService {
       return { success: false, message: "Failed to unfollow user" };
     }
     return { success: true, message: "Unfollowed successfully" };
-  }
+  };
 
-  public async follow(request: FollowRequest): Promise<TweeterResponse> {
+  public follow = async (request: FollowRequest): Promise<TweeterResponse> => {
     const success = await this.dao.Follow(request.token, request.userToFollow);
     if (success === false) {
       return { success: false, message: "Failed to follow user" };
     }
     return { success: true, message: "Followed successfully" };
-  }
+  };
 }

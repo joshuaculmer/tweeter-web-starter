@@ -1,20 +1,36 @@
 import { FakeData, User, UserDto } from "tweeter-shared";
 import { UserDAO } from "../UserDAO";
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import {
+  DynamoDBClient,
+  GetItemCommand,
+  GetItemCommandOutput,
+} from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+
+export async function getUserCommand(
+  tableName: string,
+  userAlias: string,
+  client: DynamoDBClient
+): Promise<GetItemCommandOutput> {
+  const getUserCommand = {
+    TableName: tableName,
+    Key: {
+      username: { S: userAlias },
+    },
+  };
+  const userdata = await client.send(new GetItemCommand(getUserCommand));
+  return userdata;
+}
 
 export class DynamoUserDAO implements UserDAO {
   private authTableName = "authentication";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
   async GetUser(userAlias: string): Promise<UserDto | null> {
-    const getUserCommand = {
-      TableName: this.authTableName,
-      Key: {
-        username: { S: userAlias },
-      },
-    };
-    const userdata = await this.client.send(new GetItemCommand(getUserCommand));
-
+    const userdata = await getUserCommand(
+      this.authTableName,
+      userAlias,
+      this.client
+    );
     if (
       !userdata.Item ||
       !userdata.Item.first_name ||
