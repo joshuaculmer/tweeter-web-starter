@@ -116,15 +116,16 @@ export class ServerFacade {
 
   public async getFollowerCount(alias: string): Promise<number> {
     const response = await this.clientCommunicator.doPost<any, any>(
-      { userAlias: alias },
+      { alias: alias },
       "/follow/followerCount/get"
     );
     return response.Number;
   }
 
   public async getFolloweeCount(alias: string): Promise<number> {
+    console.log("ServerFacade - getFolloweeCount called with alias:", alias);
     const response = await this.clientCommunicator.doPost<any, any>(
-      { userAlias: alias },
+      { alias: alias },
       "/follow/followeeCount/get"
     );
     return response.Number;

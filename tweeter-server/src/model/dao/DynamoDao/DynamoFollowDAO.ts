@@ -192,30 +192,33 @@ export class DynamoFollowDAO implements FollowDAO {
   ): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  async GetFollowerCount(alias: string): Promise<number> {
+  GetFollowerCount = async (alias: string): Promise<number> => {
     const userData = await getUserCommand(
       this.authTableName,
       alias,
       this.client
     );
+    console.log("GetFollowerCount - userData:", userData);
 
     if (!userData.Item || !userData.Item.follower_count) {
       return 0;
     }
+    console.log("Follower count data:", userData.Item.follower_count.N);
     return Number(userData.Item.follower_count.N);
-  }
-  async GetFolloweeCount(alias: string): Promise<number> {
+  };
+  GetFolloweeCount = async (alias: string): Promise<number> => {
     const userData = await getUserCommand(
       this.authTableName,
       alias,
       this.client
     );
-
+    console.log("GetFolloweeCount - userData:", userData);
     if (!userData.Item || !userData.Item.followee_count) {
       return 0;
     }
+    console.log("Followee count data:", userData.Item.followee_count.N);
     return Number(userData.Item.followee_count.N);
-  }
+  };
   Follow(token: string, userToFollow: UserDto): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
