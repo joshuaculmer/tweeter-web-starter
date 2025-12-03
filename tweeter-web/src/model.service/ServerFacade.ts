@@ -171,7 +171,7 @@ export class ServerFacade {
     );
     if (response.success) {
       return {
-        token: response.AuthToken,
+        token: new AuthToken(response.AuthToken._token, Date.now()),
         user: User.fromDto(response.UserDto) as User,
       };
     } else {
