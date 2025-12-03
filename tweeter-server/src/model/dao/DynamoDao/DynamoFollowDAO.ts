@@ -7,8 +7,10 @@ import {
   DeleteCommand,
   PutCommand,
   UpdateCommand,
+  GetCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { batchGetUsers, getUserCommand } from "./DynamoUserDAO";
+import { usernameByToken } from "./DynamoAuthDAO";
 
 export class Follow {
   follower_alias: string;
@@ -50,7 +52,7 @@ export class DynamoFollowDAO implements FollowDAO {
       })
     );
   };
-  private generateFollowItem = async (follow: Follow) => {
+  private generateFollowItem = (follow: Follow) => {
     return {
       [this.followerAttr]: follow.follower_alias,
       [this.followeeAttr]: follow.followee_alias,
@@ -189,12 +191,31 @@ export class DynamoFollowDAO implements FollowDAO {
     return [users, hasMore];
   }
 
-  GetIsFollowerStatus(
+  async GetIsFollowerStatus(
     token: string,
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
-    throw new Error("Method not implemented.");
+    // check if token is valid
+    const username = await usernameByToken(token);
+    if (!username || username !== user.alias) {
+      throw new Error("Token is invalid");
+    }
+
+    const follow = new Follow(user.alias, selectedUser.alias);
+    return this.client
+      .send(
+        new GetCommand({
+          TableName: this.followTableName,
+          Key: {
+            follower_alias: follow.follower_alias,
+            followee_alias: follow.followee_alias,
+          },
+        })
+      )
+      .then((data) => {
+        return data.Item !== undefined;
+      });
   }
   GetFollowerCount = async (alias: string): Promise<number> => {
     const userData = await getUserCommand(
@@ -204,7 +225,11 @@ export class DynamoFollowDAO implements FollowDAO {
     );
     console.log("GetFollowerCount - userData:", userData);
 
-    if (!userData.Item || !userData.Item.follower_count) {
+    if (
+      !userData.Item ||
+      !userData.Item.follower_count ||
+      !userData.Item.follower_count.N
+    ) {
       return 0;
     }
     console.log("Follower count data:", userData.Item.follower_count.N);
@@ -217,7 +242,11 @@ export class DynamoFollowDAO implements FollowDAO {
       this.client
     );
     console.log("GetFolloweeCount - userData:", userData);
-    if (!userData.Item || !userData.Item.followee_count) {
+    if (
+      !userData.Item ||
+      !userData.Item.followee_count ||
+      !userData.Item.followee_count.N
+    ) {
       return 0;
     }
     console.log("Followee count data:", userData.Item.followee_count.N);
@@ -257,7 +286,7 @@ export class DynamoFollowDAO implements FollowDAO {
     const decrementFollowerParams = {
       TableName: this.authTableName,
       Key: { username: username },
-      UpdateExpression: "SET follower_count = follower_count + :inc",
+      UpdateExpression: "SET followee_count = followee_count + :inc",
       ExpressionAttributeValues: {
         ":inc": 1,
       },
@@ -270,7 +299,7 @@ export class DynamoFollowDAO implements FollowDAO {
     const decrementFolloweeParams = {
       TableName: this.authTableName,
       Key: { username: userToFollow.alias },
-      UpdateExpression: "SET followee_count = followee_count + :inc",
+      UpdateExpression: "SET follower_count = follower_count + :inc",
       ExpressionAttributeValues: {
         ":inc": 1,
       },
@@ -313,7 +342,7 @@ export class DynamoFollowDAO implements FollowDAO {
     const decrementFollowerParams = {
       TableName: this.authTableName,
       Key: { username: username },
-      UpdateExpression: "SET follower_count = follower_count - :dec",
+      UpdateExpression: "SET followee_count = followee_count - :dec",
       ExpressionAttributeValues: {
         ":dec": 1,
       },
@@ -326,7 +355,7 @@ export class DynamoFollowDAO implements FollowDAO {
     const decrementFolloweeParams = {
       TableName: this.authTableName,
       Key: { username: userToUnfollow.alias },
-      UpdateExpression: "SET followee_count = followee_count - :dec",
+      UpdateExpression: "SET follower_count = follower_count - :dec",
       ExpressionAttributeValues: {
         ":dec": 1,
       },

@@ -1,15 +1,14 @@
 import { AuthToken, User, UserDto } from "tweeter-shared";
 import { AuthDAO } from "../AuthDAO";
 
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
-  DynamoDBClient,
-  PutItemCommand,
-  GetItemCommand,
-  DeleteItemCommand,
+  DynamoDBDocumentClient,
+  PutCommand,
+  GetCommand,
+  DeleteCommand,
   QueryCommand,
-  QueryCommandOutput,
-} from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+} from "@aws-sdk/lib-dynamodb";
 import * as bcrypt from "bcryptjs";
 import {
   ObjectCannedACL,
@@ -17,27 +16,31 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
-export const queryByToken = async (
+export const usernameByToken = async (
   token: string
-): Promise<QueryCommandOutput | null> => {
+): Promise<string | boolean> => {
+  if (!token) {
+    throw new Error("Token is invalid");
+  }
   const queryResult = await DynamoDBDocumentClient.from(
     new DynamoDBClient({})
   ).send(
     new QueryCommand({
-      TableName: "authentication",
+      TableName: "authtoken",
       IndexName: "authtoken_index",
       KeyConditionExpression: "authtoken = :token",
       ExpressionAttributeValues: {
-        ":token": { S: token },
+        ":token": token,
       },
     })
   );
 
   if (!queryResult.Items || queryResult.Items.length === 0) {
-    return null; // Token not found
-  } else {
-    return queryResult;
+    return false; // Token not found
   }
+
+  const username = queryResult!.Items[0]!.username!;
+  return username;
 };
 
 export class DynamoAuthDAO implements AuthDAO {
@@ -80,14 +83,14 @@ export class DynamoAuthDAO implements AuthDAO {
     }
   };
 
-  async register(
+  public register = async (
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
     userImageBytes: string,
     imageFileExtension: string
-  ): Promise<{ User: User; AuthToken: AuthToken }> {
+  ): Promise<{ User: User; AuthToken: AuthToken }> => {
     // check alias formatting for @ symbol
     if (!alias.startsWith("@")) {
       throw new Error("Alias must begin with @ symbol");
@@ -105,17 +108,17 @@ export class DynamoAuthDAO implements AuthDAO {
 
     // Create user record in authentication table with S3 URL
     const userItem = {
-      username: { S: alias },
-      password_hash: { S: passwordHash },
-      first_name: { S: firstName },
-      last_name: { S: lastName },
-      image_url: { S: imageUrl },
-      follower_count: { N: "0" },
-      followee_count: { N: "0" },
+      username: alias,
+      password_hash: passwordHash,
+      first_name: firstName,
+      last_name: lastName,
+      image_url: imageUrl,
+      follower_count: "0",
+      followee_count: "0",
     };
 
     await this.client.send(
-      new PutItemCommand({
+      new PutCommand({
         TableName: this.authTableName,
         Item: userItem,
       })
@@ -127,13 +130,13 @@ export class DynamoAuthDAO implements AuthDAO {
 
     // Store auth token
     const tokenItem = {
-      username: { S: alias },
-      authtoken: { S: authToken.token },
-      timestamp: { N: timestamp.toString() },
+      username: alias,
+      authtoken: authToken.token,
+      timestamp: timestamp.toString(),
     };
 
     await this.client.send(
-      new PutItemCommand({
+      new PutCommand({
         TableName: this.authTokenTableName,
         Item: tokenItem,
       })
@@ -142,18 +145,18 @@ export class DynamoAuthDAO implements AuthDAO {
     // Create and return User object with S3 URL
     const user = new User(firstName, lastName, alias, imageUrl);
     return { User: user, AuthToken: authToken };
-  }
+  };
 
-  async login(
+  public login = async (
     alias: string,
     password: string
-  ): Promise<{ User: User; AuthToken: AuthToken }> {
+  ): Promise<{ User: User; AuthToken: AuthToken }> => {
     // Get user from authentication table
     const result = await this.client.send(
-      new GetItemCommand({
+      new GetCommand({
         TableName: this.authTableName,
         Key: {
-          username: { S: alias },
+          username: alias,
         },
       })
     );
@@ -161,11 +164,11 @@ export class DynamoAuthDAO implements AuthDAO {
     // Verify item exists and password exists on it for type checking
     if (!result.Item) {
       throw new Error("Invalid alias or password");
-    } else if (!result.Item.password_hash || !result.Item.password_hash.S) {
+    } else if (!result.Item.password_hash || !result.Item.password_hash) {
       throw new Error("Invalid alias or password");
     }
 
-    const passwordHash = result.Item.password_hash.S;
+    const passwordHash = result.Item.password_hash;
     const isValid = await bcrypt.compare(password, passwordHash);
 
     if (!isValid) {
@@ -179,13 +182,13 @@ export class DynamoAuthDAO implements AuthDAO {
 
     // Store auth token
     const tokenItem = {
-      username: { S: alias },
-      authtoken: { S: authToken.token },
-      timestamp: { N: timestamp.toString() },
+      username: alias,
+      authtoken: authToken.token,
+      timestamp: timestamp.toString(),
     };
 
     await this.client.send(
-      new PutItemCommand({
+      new PutCommand({
         TableName: this.authTokenTableName,
         Item: tokenItem,
       })
@@ -202,25 +205,25 @@ export class DynamoAuthDAO implements AuthDAO {
 
     // Create and return User object
     const user = new User(
-      result.Item.first_name.S!,
-      result.Item.last_name.S!,
+      result.Item.first_name,
+      result.Item.last_name,
       alias,
-      result.Item.image_url.S!
+      result.Item.image_url
     );
 
     return { User: user, AuthToken: authToken };
-  }
+  };
 
-  async logout(token: string): Promise<boolean> {
+  public logout = async (token: string): Promise<boolean> => {
     try {
       // Query the GSI to find the username associated with this token
       const queryResult = await this.client.send(
         new QueryCommand({
           TableName: this.authTokenTableName,
           IndexName: "authtoken_index",
-          KeyConditionExpression: "authtoken = :token",
+          KeyConditionExpression: "authtoken = :token", // Make sure 'authtoken' matches your GSI partition key name
           ExpressionAttributeValues: {
-            ":token": { S: token },
+            ":token": token, // Remove the { S: token } wrapper - the SDK handles this
           },
         })
       );
@@ -229,17 +232,22 @@ export class DynamoAuthDAO implements AuthDAO {
         return false; // Token not found
       }
 
-      // TODO fix this typechecking/ignoring mess username
-      // is a attribute name on the database so its guaranteed to be there,
-      // but it just looks like a bit of a mess
-      const username = queryResult!.Items[0]!.username!.S!;
+      console.log(
+        "Query result item:",
+        JSON.stringify(queryResult.Items[0], null, 2)
+      );
+      const username = queryResult.Items[0]!.username;
+      if (!username) {
+        console.error("Username not found in query result");
+        return false;
+      }
 
       // Delete the token from the table
       await this.client.send(
-        new DeleteItemCommand({
+        new DeleteCommand({
           TableName: this.authTokenTableName,
           Key: {
-            username: { S: username },
+            username: username,
           },
         })
       );
@@ -249,5 +257,5 @@ export class DynamoAuthDAO implements AuthDAO {
       console.error("Error during logout:", error);
       return false;
     }
-  }
+  };
 }

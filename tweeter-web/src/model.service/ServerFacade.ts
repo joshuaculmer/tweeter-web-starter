@@ -107,7 +107,7 @@ export class ServerFacade {
       "/follow/followerstatus/get"
     );
     if (response.success) {
-      return response;
+      return response.bool;
     } else {
       console.error(response);
       throw new Error(response.message ?? undefined);
