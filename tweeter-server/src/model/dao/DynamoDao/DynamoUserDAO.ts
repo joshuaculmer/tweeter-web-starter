@@ -42,20 +42,23 @@ export async function batchGetUsers(
       },
     },
   };
+  console.log("Batch get users params:", JSON.stringify(params, null, 2));
   const data = await client.send(new BatchGetCommand(params));
   const users: UserDto[] = [];
   const items = data.Responses ? data.Responses[tableName] : [];
+  console.log("Batch get users result items:", items);
   if (!items) {
     return users;
   }
   for (const item of items) {
     users.push({
-      firstName: item.first_name.S!,
-      lastName: item.last_name.S!,
-      alias: item.username.S!,
-      imageUrl: item.image_url.S!,
+      firstName: item.first_name,
+      lastName: item.last_name,
+      alias: item.username,
+      imageUrl: item.image_url,
     });
   }
+  console.log("Batch get users result:", users);
   return users;
 }
 

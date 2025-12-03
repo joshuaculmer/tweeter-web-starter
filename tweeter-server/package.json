@@ -8,7 +8,7 @@
     "compile": "npm run clean && tsc",
     "clean": "rimraf dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sam": "sam.cmd build && sam.cmd deploy"
+    "sam": "npm run build && sam.cmd build && sam.cmd deploy"
   },
   "keywords": [],
   "author": "",
@@ -24,3 +24,4 @@
     "@types/bcryptjs": "^2.4.6"
   }
 }
+
