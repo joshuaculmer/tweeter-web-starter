@@ -71,6 +71,7 @@ export class DynamoUserDAO implements UserDAO {
       userAlias,
       this.client
     );
+    console.log("Get user result:", userdata);
     if (
       !userdata.Item ||
       !userdata.Item.first_name ||

@@ -107,14 +107,14 @@ export class DynamoFollowDAO implements FollowDAO {
         };
       }
     }
-    console.log("Query params:", JSON.stringify(params, null, 2));
+    // console.log("Query params:", JSON.stringify(params, null, 2));
 
     const data = await this.client.send(new QueryCommand(params));
 
-    console.log("Query result:", {
-      itemCount: data.Items?.length || 0,
-      hasMore: !!data.LastEvaluatedKey,
-    });
+    // console.log("Query result:", {
+    //   itemCount: data.Items?.length || 0,
+    //   hasMore: !!data.LastEvaluatedKey,
+    // });
     const follows: Follow[] = [];
 
     if (data.Items) {
@@ -152,13 +152,13 @@ export class DynamoFollowDAO implements FollowDAO {
       this.indexName
     );
     const followerAliases = followers.map((follow) => follow.follower_handle);
-    console.log("Follower Aliases: ", followerAliases);
+    // console.log("Follower Aliases: ", followerAliases);
     const users = await batchGetUsers(
       followerAliases,
       this.authTableName,
       this.client
     );
-    console.log("Follower Users: ", users);
+    // console.log("Follower Users: ", users);
     return [users, hasMore];
   }
   async LoadMoreFollowees(
@@ -175,13 +175,13 @@ export class DynamoFollowDAO implements FollowDAO {
       pageSize
     );
     const followeeAliases = followees.map((follow) => follow.followee_handle);
-    console.log("Followee Aliases: ", followeeAliases);
+    // console.log("Followee Aliases: ", followeeAliases);
     const users = await batchGetUsers(
       followeeAliases,
       this.authTableName,
       this.client
     );
-    console.log("Followee Users: ", users);
+    // console.log("Followee Users: ", users);
     return [users, hasMore];
   }
 

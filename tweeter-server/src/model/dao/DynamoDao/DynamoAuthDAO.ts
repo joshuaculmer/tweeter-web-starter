@@ -27,17 +27,17 @@ export class DynamoAuthDAO implements AuthDAO {
     fileName: string,
     imageStringBase64Encoded: string
   ): Promise<string> => {
-    console.log("Backend - base64 length:", imageStringBase64Encoded.length);
-    console.log(
-      "Backend - base64 first 50 chars:",
-      imageStringBase64Encoded.substring(0, 50)
-    );
+    // console.log("Backend - base64 length:", imageStringBase64Encoded.length);
+    // console.log(
+    //   "Backend - base64 first 50 chars:",
+    //   imageStringBase64Encoded.substring(0, 50)
+    // );
     let decodedImageBuffer: Buffer = Buffer.from(
       imageStringBase64Encoded,
       "base64"
     );
 
-    console.log("Backend - decoded buffer length:", decodedImageBuffer.length);
+    // console.log("Backend - decoded buffer length:", decodedImageBuffer.length);
 
     const s3Params = {
       Bucket: this.BUCKET,
@@ -64,6 +64,10 @@ export class DynamoAuthDAO implements AuthDAO {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<{ User: User; AuthToken: AuthToken }> {
+    // check alias formatting for @ symbol
+    if (!alias.startsWith("@")) {
+      throw new Error("Alias must begin with @ symbol");
+    }
     // Decode once to get back to the original base64
     const actualBase64 = Buffer.from(userImageBytes, "base64").toString("utf8");
 
