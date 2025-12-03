@@ -2,12 +2,14 @@ import { TweeterResponse } from "tweeter-shared";
 import { UnfollowRequest } from "tweeter-shared/src/model/net/request/UnfollowRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
 import { FollowService } from "../../model/service/FollowService";
-import { FakeFollowDAO } from "../../model/dao/FakeDataDao/FakeFollowDAO";
-const followDao = new FakeFollowDAO();
+import { DynamoFollowDAO } from "../../model/dao/DynamoDao/DynamoFollowDAO";
+
+const followDAO = new DynamoFollowDAO();
 export const handler = async (
   request: UnfollowRequest
 ): Promise<TweeterResponse> => {
-  const userService = new FollowService(followDao);
+  const userService = new FollowService(followDAO);
+  console.log("Unfollow Lambda received request:", request);
   return await tryCatchWrapper(
     userService.unfollow,
     request,

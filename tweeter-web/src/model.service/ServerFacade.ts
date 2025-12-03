@@ -135,7 +135,7 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
-        selectedUser: selectedUser.dto as UserDto,
+        userToFollow: selectedUser.dto as UserDto,
       },
       "/follow/follow"
     );
@@ -150,7 +150,7 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
-        selectedUser: selectedUser.dto as UserDto,
+        userToUnfollow: selectedUser.dto as UserDto,
       },
       "/follow/unfollow"
     );

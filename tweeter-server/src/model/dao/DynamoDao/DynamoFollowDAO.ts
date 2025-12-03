@@ -6,25 +6,25 @@ import {
   QueryCommand,
   DeleteCommand,
   PutCommand,
-  BatchGetCommand,
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { batchGetUsers, getUserCommand } from "./DynamoUserDAO";
 
 export class Follow {
-  follower_handle: string;
-  followee_handle: string;
+  follower_alias: string;
+  followee_alias: string;
 
   constructor(follower: string, followee: string) {
-    this.followee_handle = followee;
-    this.follower_handle = follower;
+    this.followee_alias = followee;
+    this.follower_alias = follower;
   }
 
   toString(): string {
     return (
       "follow{ follower handle: " +
-      this.follower_handle +
+      this.follower_alias +
       "\nfollowee handle:" +
-      this.followee_handle +
+      this.followee_alias +
       "}"
     );
   }
@@ -32,34 +32,38 @@ export class Follow {
 
 export class DynamoFollowDAO implements FollowDAO {
   private authTableName = "authentication";
+  private authTokenTableName = "authtoken";
   private followTableName = "follow";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
   private readonly followerAttr = "follower_alias";
   private readonly followeeAttr = "followee_alias";
   private readonly indexName = "follow_index";
 
-  public async deleteFollow(follow: Follow) {
-    const params = {
-      TableName: this.followTableName,
-      Key: this.generateFollowItem(follow),
-    };
-    await this.client.send(new DeleteCommand(params));
-  }
-
-  private generateFollowItem(follow: Follow) {
+  private deleteFollow = async (follow: Follow): Promise<void> => {
+    await this.client.send(
+      new DeleteCommand({
+        TableName: this.followTableName,
+        Key: {
+          follower_alias: follow.follower_alias,
+          followee_alias: follow.followee_alias,
+        },
+      })
+    );
+  };
+  private generateFollowItem = async (follow: Follow) => {
     return {
-      [this.followerAttr]: follow.follower_handle,
-      [this.followeeAttr]: follow.followee_handle,
+      [this.followerAttr]: follow.follower_alias,
+      [this.followeeAttr]: follow.followee_alias,
     };
-  }
+  };
 
-  public async putFollows(follow: Follow) {
+  public putFollows = async (follow: Follow) => {
     const params = {
       TableName: this.followTableName,
       Item: this.generateFollowItem(follow),
     };
     await this.client.send(new PutCommand(params));
-  }
+  };
 
   private async queryFollows(
     keyAttr: string,
@@ -151,7 +155,7 @@ export class DynamoFollowDAO implements FollowDAO {
       pageSize,
       this.indexName
     );
-    const followerAliases = followers.map((follow) => follow.follower_handle);
+    const followerAliases = followers.map((follow) => follow.follower_alias);
     // console.log("Follower Aliases: ", followerAliases);
     const users = await batchGetUsers(
       followerAliases,
@@ -174,7 +178,7 @@ export class DynamoFollowDAO implements FollowDAO {
       lastItem ? lastItem.alias : undefined,
       pageSize
     );
-    const followeeAliases = followees.map((follow) => follow.followee_handle);
+    const followeeAliases = followees.map((follow) => follow.followee_alias);
     // console.log("Followee Aliases: ", followeeAliases);
     const users = await batchGetUsers(
       followeeAliases,
@@ -219,10 +223,116 @@ export class DynamoFollowDAO implements FollowDAO {
     console.log("Followee count data:", userData.Item.followee_count.N);
     return Number(userData.Item.followee_count.N);
   };
-  Follow(token: string, userToFollow: UserDto): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  async Follow(token: string, userToFollow: UserDto): Promise<boolean> {
+    // check if token is valid
+    if (!token) {
+      throw new Error("Token is invalid");
+    }
+
+    // Query the GSI to find the username associated with this token
+    const queryResult = await this.client.send(
+      new QueryCommand({
+        TableName: this.authTokenTableName,
+        IndexName: "authtoken_index",
+        KeyConditionExpression: "authtoken = :token",
+        ExpressionAttributeValues: {
+          ":token": token,
+        },
+      })
+    );
+
+    if (!queryResult.Items || queryResult.Items.length === 0) {
+      return false; // Token not found
+    }
+
+    const username = queryResult!.Items[0]!.username!;
+
+    // update follow info
+    console.log("Following user: ", userToFollow);
+    const follow = new Follow(username, userToFollow.alias);
+    await this.putFollows(follow);
+
+    // increment follow counts for this user in authTableName table
+    const decrementFollowerParams = {
+      TableName: this.authTableName,
+      Key: { username: username },
+      UpdateExpression: "SET follower_count = follower_count + :inc",
+      ExpressionAttributeValues: {
+        ":inc": 1,
+      },
+      ReturnValues: "UPDATED_NEW" as const,
+    };
+
+    await this.client.send(new UpdateCommand(decrementFollowerParams));
+
+    // increment followee count for userToUnfollow in authTableName table
+    const decrementFolloweeParams = {
+      TableName: this.authTableName,
+      Key: { username: userToFollow.alias },
+      UpdateExpression: "SET followee_count = followee_count + :inc",
+      ExpressionAttributeValues: {
+        ":inc": 1,
+      },
+      ReturnValues: "UPDATED_NEW" as const,
+    };
+    await this.client.send(new UpdateCommand(decrementFolloweeParams));
+
+    return true;
   }
-  Unfollow(token: string, userToFollow: UserDto): Promise<boolean> {
-    throw new Error("Method not implemented.");
+
+  async Unfollow(token: string, userToUnfollow: UserDto): Promise<boolean> {
+    if (!token) {
+      throw new Error("Token is invalid");
+    }
+
+    // Query the GSI to find the username associated with this token
+    const queryResult = await this.client.send(
+      new QueryCommand({
+        TableName: this.authTokenTableName,
+        IndexName: "authtoken_index",
+        KeyConditionExpression: "authtoken = :token",
+        ExpressionAttributeValues: {
+          ":token": token,
+        },
+      })
+    );
+
+    if (!queryResult.Items || queryResult.Items.length === 0) {
+      return false; // Token not found
+    }
+
+    const username = queryResult!.Items[0]!.username!;
+
+    // update follow info
+    console.log("Unfollowing user: ", userToUnfollow);
+    const follow = new Follow(username, userToUnfollow.alias);
+    await this.deleteFollow(follow);
+
+    // Decrement follow counts for this user in authTableName table
+    const decrementFollowerParams = {
+      TableName: this.authTableName,
+      Key: { username: username },
+      UpdateExpression: "SET follower_count = follower_count - :dec",
+      ExpressionAttributeValues: {
+        ":dec": 1,
+      },
+      ReturnValues: "UPDATED_NEW" as const,
+    };
+
+    await this.client.send(new UpdateCommand(decrementFollowerParams));
+
+    // decrement followee count for userToUnfollow in authTableName table
+    const decrementFolloweeParams = {
+      TableName: this.authTableName,
+      Key: { username: userToUnfollow.alias },
+      UpdateExpression: "SET followee_count = followee_count - :dec",
+      ExpressionAttributeValues: {
+        ":dec": 1,
+      },
+      ReturnValues: "UPDATED_NEW" as const,
+    };
+    await this.client.send(new UpdateCommand(decrementFolloweeParams));
+    return true;
   }
 }

@@ -7,6 +7,7 @@ import {
   GetItemCommand,
   DeleteItemCommand,
   QueryCommand,
+  QueryCommandOutput,
 } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import * as bcrypt from "bcryptjs";
@@ -15,6 +16,29 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+
+export const queryByToken = async (
+  token: string
+): Promise<QueryCommandOutput | null> => {
+  const queryResult = await DynamoDBDocumentClient.from(
+    new DynamoDBClient({})
+  ).send(
+    new QueryCommand({
+      TableName: "authentication",
+      IndexName: "authtoken_index",
+      KeyConditionExpression: "authtoken = :token",
+      ExpressionAttributeValues: {
+        ":token": { S: token },
+      },
+    })
+  );
+
+  if (!queryResult.Items || queryResult.Items.length === 0) {
+    return null; // Token not found
+  } else {
+    return queryResult;
+  }
+};
 
 export class DynamoAuthDAO implements AuthDAO {
   private authTableName = "authentication";
