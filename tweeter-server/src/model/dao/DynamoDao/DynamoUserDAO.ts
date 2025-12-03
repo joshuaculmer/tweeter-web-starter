@@ -5,7 +5,12 @@ import {
   GetItemCommand,
   GetItemCommandOutput,
 } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import {
+  BatchGetCommand,
+  BatchGetCommandInput,
+  DynamoDBDocumentClient,
+} from "@aws-sdk/lib-dynamodb";
+import { table } from "console";
 
 export async function getUserCommand(
   tableName: string,
@@ -20,6 +25,38 @@ export async function getUserCommand(
   };
   const userdata = await client.send(new GetItemCommand(getUserCommand));
   return userdata;
+}
+
+export async function batchGetUsers(
+  aliases: string[],
+  tableName: string,
+  client: DynamoDBDocumentClient
+): Promise<UserDto[]> {
+  if (aliases.length === 0) {
+    return [];
+  }
+  const params: BatchGetCommandInput = {
+    RequestItems: {
+      [tableName]: {
+        Keys: aliases.map((alias) => ({ username: alias })),
+      },
+    },
+  };
+  const data = await client.send(new BatchGetCommand(params));
+  const users: UserDto[] = [];
+  const items = data.Responses ? data.Responses[tableName] : [];
+  if (!items) {
+    return users;
+  }
+  for (const item of items) {
+    users.push({
+      firstName: item.first_name.S!,
+      lastName: item.last_name.S!,
+      alias: item.username.S!,
+      imageUrl: item.image_url.S!,
+    });
+  }
+  return users;
 }
 
 export class DynamoUserDAO implements UserDAO {
