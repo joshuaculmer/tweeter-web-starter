@@ -55,6 +55,7 @@ const AuthenticatedRoutes = () => {
           path="feed/:displayedUser"
           element={
             <StatusItemScroller
+              key={`feed-${displayedUser?.alias}`}
               featureUrl="/feed"
               presenterFactory={(view: PagedItemView<Status>) =>
                 new FeedPresenter(view)
@@ -66,6 +67,7 @@ const AuthenticatedRoutes = () => {
           path="story/:displayedUser"
           element={
             <StatusItemScroller
+              key={`story-${displayedUser?.alias}`}
               featureUrl="/story"
               presenterFactory={(view: PagedItemView<Status>) =>
                 new StoryPresenter(view)

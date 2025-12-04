@@ -38,6 +38,7 @@ const ItemScroller = <T,>({
   const presenterRef = useRef<PagedItemPresenter<T, any> | null>(null);
   if (!presenterRef.current) {
     presenterRef.current = presenterFactory(listener);
+    console.log("Presenter Type", presenterRef.current.constructor.name);
   }
 
   // Update the displayed user context variable whenever the displayedUser url parameter changes

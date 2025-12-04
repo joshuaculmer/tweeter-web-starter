@@ -15,14 +15,192 @@ export class DynamoStatusDAO implements StatusDAO {
   private authTableName = "authentication";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-  LoadMoreFeedItems(
+  private getStatusesByUser = async (
+    userAlias: string,
+    limit: number = 10,
+    lastItemTimestamp?: number
+  ): Promise<{ statuses: StatusDto[]; lastItem?: StatusDto }> => {
+    const params: any = {
+      TableName: this.statusTableName,
+      KeyConditionExpression: "user_alias = :alias",
+      ExpressionAttributeValues: {
+        ":alias": userAlias,
+      },
+      ScanIndexForward: false, // Most recent first
+      Limit: limit,
+    };
+
+    // Add pagination if lastItemTimestamp is provided
+    if (lastItemTimestamp !== undefined) {
+      params.ExclusiveStartKey = {
+        user_alias: userAlias,
+        timestamp: lastItemTimestamp,
+      };
+    }
+
+    const result = await this.client.send(new QueryCommand(params));
+
+    const statuses = (result.Items || []).map((item) => ({
+      post: item.post,
+      timestamp: item.timestamp,
+      user: {
+        firstName: item.user_firstName,
+        lastName: item.user_lastName,
+        alias: item.user_alias,
+        imageUrl: item.user_imageUrl,
+      },
+    }));
+
+    // Return the last item for pagination (only if exists)
+    if (statuses.length > 0) {
+      const lastItem = statuses[statuses.length - 1]!;
+      return { statuses, lastItem };
+    }
+
+    return { statuses };
+  };
+
+  // private getStatusesByUsers = async (
+  //   userAliases: string[],
+  //   limitPerUser: number = 10,
+  //   lastItems?: Map<string, number> // Map of user_alias -> last timestamp
+  // ): Promise<{ statuses: StatusDto[]; lastItems: Map<string, number> }> => {
+  //   // Query each user in parallel
+  //   const results = await Promise.all(
+  //     userAliases.map(async (alias) => {
+  //       const lastTimestamp = lastItems?.get(alias);
+  //       return {
+  //         alias,
+  //         result: await this.getStatusesByUser(
+  //           alias,
+  //           limitPerUser,
+  //           lastTimestamp
+  //         ),
+  //       };
+  //     })
+  //   );
+
+  //   // Combine all statuses
+  //   const allStatuses = results.flatMap((r) => r.result.statuses);
+
+  //   // Sort by timestamp (most recent first)
+  //   allStatuses.sort((a, b) => b.timestamp - a.timestamp);
+
+  //   // Track last items for each user for pagination
+  //   const newLastItems = new Map<string, number>();
+  //   results.forEach((r) => {
+  //     if (r.result.lastItem) {
+  //       newLastItems.set(r.alias, r.result.lastItem.timestamp);
+  //     }
+  //   });
+
+  //   return { statuses: allStatuses, lastItems: newLastItems };
+  // };
+
+  private getStatusesByUsers = async (
+    userAliases: string[],
+    limitPerUser: number = 10,
+    lastItem?: StatusDto | number // Can pass lastItem, timestamp, or nothing
+  ): Promise<{ statuses: StatusDto[]; lastItem?: StatusDto }> => {
+    // Determine the timestamp to use for pagination
+    let startTimestamp: number | undefined;
+    if (lastItem !== undefined) {
+      startTimestamp =
+        typeof lastItem === "number" ? lastItem : lastItem.timestamp;
+    }
+
+    // Query each user in parallel
+    const results = await Promise.all(
+      userAliases.map(async (alias) => {
+        return {
+          alias,
+          result: await this.getStatusesByUser(
+            alias,
+            limitPerUser,
+            startTimestamp
+          ),
+        };
+      })
+    );
+
+    // Combine all statuses
+    const allStatuses = results.flatMap((r) => r.result.statuses);
+
+    // Sort by timestamp (most recent first)
+    allStatuses.sort((a, b) => b.timestamp - a.timestamp);
+
+    // Take only the requested limit from the combined sorted results
+    const limitedStatuses = allStatuses.slice(
+      0,
+      limitPerUser * userAliases.length
+    );
+
+    // Return the last item for pagination (from the combined, sorted list)
+    if (limitedStatuses.length > 0) {
+      const newLastItem = limitedStatuses[limitedStatuses.length - 1]!;
+      return { statuses: limitedStatuses, lastItem: newLastItem };
+    }
+
+    return { statuses: limitedStatuses };
+  };
+
+  public LoadMoreFeedItems = async (
     token: string,
     useralias: string,
     lastItem: StatusDto | null,
     pageSize: number
-  ): Promise<[StatusDto[], boolean]> {
-    throw new Error("Method not implemented.");
-  }
+  ): Promise<[StatusDto[], boolean]> => {
+    // validate token
+    // Query the GSI to find the username associated with this token
+    const queryResult = await this.client.send(
+      new QueryCommand({
+        TableName: this.authTokenTableName,
+        IndexName: "authtoken_index",
+        KeyConditionExpression: "authtoken = :token", // Make sure 'authtoken' matches your GSI partition key name
+        ExpressionAttributeValues: {
+          ":token": token,
+        },
+      })
+    );
+
+    if (!queryResult.Items || queryResult.Items.length === 0) {
+      throw new Error("Invalid auth token");
+    }
+
+    // get list of followees
+    const followeesResult = await this.client.send(
+      new QueryCommand({
+        TableName: "follow",
+        KeyConditionExpression: "follower_alias = :alias",
+        ExpressionAttributeValues: {
+          ":alias": useralias,
+        },
+      })
+    );
+
+    // extract followee aliases
+    const followeeAliases: string[] = [];
+    if (followeesResult.Items) {
+      for (const item of followeesResult.Items) {
+        followeeAliases.push(item.followee_alias);
+      }
+    }
+
+    console.log("Followee Aliases:", followeeAliases);
+    // get status items associate with followees
+    const itemsDto: StatusDto[] = [];
+    const { statuses, lastItem: newLastItem } = await this.getStatusesByUsers(
+      followeeAliases,
+      pageSize,
+      lastItem ? lastItem : undefined
+    );
+    itemsDto.push(...statuses);
+    // determine if there are more items by comparing pagesize to returned items
+    const hasMore = statuses.length === pageSize;
+
+    return [itemsDto, hasMore];
+  };
+
   public LoadMoreStoryItems = async (
     token: string,
     useralias: string,
@@ -46,39 +224,24 @@ export class DynamoStatusDAO implements StatusDAO {
       throw new Error("Invalid auth token");
     }
 
-    // get status items associate with my user
-    const statusQueryResult = await this.client.send(
-      new QueryCommand({
-        TableName: this.statusTableName,
-        KeyConditionExpression: "user_alias = :alias",
-        ExpressionAttributeValues: {
-          ":alias": useralias,
-        },
-        ScanIndexForward: false, // Most recent first
-        Limit: pageSize,
-      })
+    // get status items associate with user
+    const itemsDto: StatusDto[] = [];
+    const { statuses, lastItem: newLastItem } = await this.getStatusesByUser(
+      useralias,
+      pageSize,
+      lastItem ? lastItem.timestamp : undefined
     );
-
-    if (!statusQueryResult.Items) {
-      return [[], false];
-    }
-
-    const itemsDto = statusQueryResult.Items.map((item) => ({
-      post: item.post,
-      user: {
-        firstName: item.user_firstName,
-        lastName: item.user_lastName,
-        alias: item.user_alias,
-        imageUrl: item.user_imageUrl,
-      },
-      timestamp: item.timestamp,
-    }));
-
-    const hasMore = statusQueryResult.Items.length === pageSize;
+    itemsDto.push(...statuses);
+    // determine if there are more items by comparing pagesize to returned items
+    const hasMore = statuses.length === pageSize;
 
     return [itemsDto, hasMore];
   };
-  PostStatus = async (token: string, newstatus: string): Promise<boolean> => {
+
+  public PostStatus = async (
+    token: string,
+    newstatus: string
+  ): Promise<boolean> => {
     // validate token
     const username = await usernameByToken(token);
     if (!username) {

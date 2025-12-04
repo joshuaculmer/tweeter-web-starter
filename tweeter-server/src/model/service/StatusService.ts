@@ -20,7 +20,7 @@ export class StatusService {
   public loadMoreFeedItems = async (
     request: LoadMoreFeedItemsRequest
   ): Promise<PagedStatusItemResponse> => {
-    const [items, hasMore] = await this.dao.LoadMoreStoryItems(
+    const [items, hasMore] = await this.dao.LoadMoreFeedItems(
       request.token,
       request.userAlias,
       Status.fromDto(request.lastItem),
