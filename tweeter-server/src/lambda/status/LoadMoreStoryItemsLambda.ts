@@ -5,10 +5,10 @@ import {
 } from "tweeter-shared";
 import { StatusService } from "../../model/service/StatusService";
 import { tryCatchWrapper } from "../LambdaHelper";
-import { FakeDataStatusDAO } from "../../model/dao/FakeDataDao/FakeStatusDAO";
 import { StatusDAO } from "../../model/dao/StatusDAO";
+import { DynamoStatusDAO } from "../../model/dao/DynamoDao/DynamoStatusDAO";
 
-const statusdao: StatusDAO = new FakeDataStatusDAO();
+const statusdao: StatusDAO = new DynamoStatusDAO();
 export const handler = async (
   request: LoadMoreStoryItemsRequest
 ): Promise<PagedStatusItemResponse> => {

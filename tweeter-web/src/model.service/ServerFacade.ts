@@ -209,11 +209,11 @@ export class ServerFacade {
     }
   }
 
-  public async postStatus(token: string, content: string): Promise<void> {
+  public async postStatus(token: string, newStatus: string): Promise<void> {
     const response = await this.clientCommunicator.doPost<any, any>(
       {
         token: token,
-        content: content,
+        newStatus: newStatus,
       },
       "/status/post"
     );
@@ -254,6 +254,7 @@ export class ServerFacade {
     >(request, "/status/loadmorestoryitems");
 
     // convert status dtos to status objects
+    console.log("ServerFacade - loadMoreStoryItems response:", response);
     const statusItems: Status[] = response.items.map(
       (StatusDto: any) => Status.fromDto(StatusDto) as Status
     );

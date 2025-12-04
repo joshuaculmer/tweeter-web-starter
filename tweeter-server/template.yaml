@@ -684,3 +684,21 @@ Resources:
         - AttributeName: username
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
+
+  StatusTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: status
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: user_alias
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: user_alias
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES

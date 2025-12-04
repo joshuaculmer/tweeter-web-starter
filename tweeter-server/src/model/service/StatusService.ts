@@ -21,6 +21,8 @@ export class StatusService {
     request: LoadMoreFeedItemsRequest
   ): Promise<PagedStatusItemResponse> => {
     const [items, hasMore] = await this.dao.LoadMoreStoryItems(
+      request.token,
+      request.userAlias,
       Status.fromDto(request.lastItem),
       request.pageSize
     );
@@ -36,6 +38,8 @@ export class StatusService {
     request: LoadMoreStoryItemsRequest
   ): Promise<PagedStatusItemResponse> => {
     const [items, hasMore] = await this.dao.LoadMoreStoryItems(
+      request.token,
+      request.userAlias,
       Status.fromDto(request.lastItem),
       request.pageSize
     );
@@ -50,7 +54,11 @@ export class StatusService {
   public postStatus = async (
     request: PostStatusRequest
   ): Promise<TweeterResponse> => {
-    await this.dao.PostStatus(request.token, request.newStatus);
-    return { success: true, message: "Status posted successfully" };
+    const result = await this.dao.PostStatus(request.token, request.newStatus);
+    if (result) {
+      return { success: true, message: "Status posted successfully" };
+    } else {
+      return { success: false, message: "Could not post status" };
+    }
   };
 }

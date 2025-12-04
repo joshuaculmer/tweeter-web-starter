@@ -3,10 +3,12 @@ import { StatusDto } from "tweeter-shared/dist/model/dto/StatusDto";
 import { StatusDAO } from "../StatusDAO";
 
 export class FakeDataStatusDAO implements StatusDAO {
-  LoadMoreFeedItems(
+  async LoadMoreFeedItems(
+    token: string,
+    useralias: string,
     lastItem: Status,
     pageSize: number
-  ): [StatusDto[], boolean] {
+  ): Promise<[StatusDto[], boolean]> {
     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
       lastItem,
       pageSize
@@ -15,10 +17,12 @@ export class FakeDataStatusDAO implements StatusDAO {
     return [itemsDto, hasMore];
   }
 
-  LoadMoreStoryItems(
+  async LoadMoreStoryItems(
+    token: string,
+    useralias: string,
     lastItem: Status,
     pageSize: number
-  ): [StatusDto[], boolean] {
+  ): Promise<[StatusDto[], boolean]> {
     const [items, hasMore] = FakeData.instance.getPageOfStatuses(
       lastItem,
       pageSize
