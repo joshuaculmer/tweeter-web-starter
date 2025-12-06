@@ -314,15 +314,6 @@ Resources:
               responses: *commonSwaggerResponses
 
   #
-  # SQS Queues
-  #
-
-  #   MyQueue:
-  #     Type: AWS::SQS::Queue
-  #     Properties:
-  #       QueueName: MyQueue
-
-  #
   # Lambda Layer (reused by all Lambda functions)
   #
   tweeterLayer:
@@ -608,18 +599,18 @@ Resources:
   # SQS Queue Lambda Functions
   #
 
-  #   MyQueueFunction:
-  #     Type: AWS::Serverless::Function
-  #     Properties:
-  #       FunctionName: MyQueueFunction
-  #       Handler: <PATH TO LAMBDA HANDLER>
-  #       Policies: *commonPolicies
-  #       Events:
-  #         SQSTrigger:
-  #           Type: SQS
-  #           Properties:
-  #             Queue: !GetAtt MyQueue.Arn
-  #             Enabled: true
+  # MyQueueFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     FunctionName: MyQueueFunction
+  #     Handler: <PATH TO LAMBDA HANDLER>
+  #     Policies: *commonPolicies
+  #     Events:
+  #       SQSTrigger:
+  #         Type: SQS
+  #         Properties:
+  #           Queue: !GetAtt MyQueue.Arn
+  #           Enabled: true
 
   #
   # DynamoDB Tables
@@ -638,7 +629,10 @@ Resources:
           KeyType: HASH
         - AttributeName: followee_alias
           KeyType: RANGE
-      BillingMode: PAY_PER_REQUEST
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
       GlobalSecondaryIndexes:
         - IndexName: follow_index
           KeySchema:
@@ -648,6 +642,9 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
 
   authTokenTable:
     Type: AWS::DynamoDB::Table
@@ -661,10 +658,13 @@ Resources:
       KeySchema:
         - AttributeName: username
           KeyType: HASH
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
       TimeToLiveSpecification:
         AttributeName: timestamp
         Enabled: true
-      BillingMode: PAY_PER_REQUEST
       GlobalSecondaryIndexes:
         - IndexName: authtoken_index
           KeySchema:
@@ -672,6 +672,9 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
 
   authenticationTable:
     Type: AWS::DynamoDB::Table
@@ -683,13 +686,15 @@ Resources:
       KeySchema:
         - AttributeName: username
           KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
 
   StatusTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: status
-      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: user_alias
           AttributeType: S
@@ -700,5 +705,9 @@ Resources:
           KeyType: HASH
         - AttributeName: timestamp
           KeyType: RANGE
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES

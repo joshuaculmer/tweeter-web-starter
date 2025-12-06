@@ -106,6 +106,19 @@ export class DynamoAuthDAO implements AuthDAO {
       actualBase64
     );
 
+    // check that no user with the same alias exists
+    const existingUser = await this.client.send(
+      new GetCommand({
+        TableName: this.authTableName,
+        Key: {
+          username: alias,
+        },
+      })
+    );
+    if (existingUser.Item) {
+      throw new Error("A user with this alias already exists");
+    }
+
     // Create user record in authentication table with S3 URL
     const userItem = {
       username: alias,

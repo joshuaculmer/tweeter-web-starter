@@ -17,8 +17,7 @@ import { ClientCommunicator } from "./ClientCommunicator";
 
 export class ServerFacade {
   private SERVER_URL =
-    "https://br1t46r7zi.execute-api.us-east-1.amazonaws.com/prod";
-
+    "https://pz9h48d774.execute-api.us-east-1.amazonaws.com/prod";
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
   //
@@ -110,7 +109,7 @@ export class ServerFacade {
       return response.bool;
     } else {
       console.error(response);
-      throw new Error(response.message ?? undefined);
+      throw new Error(response.errorMessage ?? undefined);
     }
   }
 
@@ -142,7 +141,7 @@ export class ServerFacade {
 
     if (!response.success) {
       console.error(response);
-      throw new Error(response.message ?? "Follow failed");
+      throw new Error(response.errorMessage ?? "Follow failed");
     }
   }
 
@@ -157,7 +156,7 @@ export class ServerFacade {
 
     if (!response.success) {
       console.error(response);
-      throw new Error(response.message ?? "Unfollow failed");
+      throw new Error(response.errorMessage ?? "Unfollow failed");
     }
   }
 
@@ -176,7 +175,7 @@ export class ServerFacade {
       };
     } else {
       console.error(response);
-      throw new Error(response.message ?? undefined);
+      throw new Error(response.errorMessage ?? undefined);
     }
   }
 
@@ -187,7 +186,7 @@ export class ServerFacade {
     );
     if (!response.success) {
       console.error(response);
-      throw new Error(response.message ?? "Logout failed");
+      throw new Error(response.errorMessage ?? "Logout failed");
     }
   }
 
@@ -205,7 +204,7 @@ export class ServerFacade {
       };
     } else {
       console.error(response);
-      throw new Error(response.message ?? undefined);
+      throw new Error(response.errorMessage ?? undefined);
     }
   }
 
@@ -219,7 +218,7 @@ export class ServerFacade {
     );
     if (!response.success) {
       console.error(response);
-      throw new Error(response.message ?? "Post status failed");
+      throw new Error(response.errorMessage ?? "Post status failed");
     }
   }
 

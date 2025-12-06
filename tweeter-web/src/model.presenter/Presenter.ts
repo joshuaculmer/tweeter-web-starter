@@ -25,8 +25,14 @@ export abstract class Presenter<V extends View> {
     try {
       await operation();
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.log(error);
       this._view.displayErrorMessage(
-        "Failed to " + operationDescription + " because of exception: " + error
+        "Failed to " +
+          operationDescription +
+          " because of exception: " +
+          errorMessage
       );
     }
   }
