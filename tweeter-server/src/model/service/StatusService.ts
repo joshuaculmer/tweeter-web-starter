@@ -54,11 +54,16 @@ export class StatusService {
   public postStatus = async (
     request: PostStatusRequest
   ): Promise<TweeterResponse> => {
+
+    // post status like normal
     const result = await this.dao.PostStatus(request.token, request.newStatus);
     if (result) {
       return { success: true, message: "Status posted successfully" };
     } else {
       return { success: false, message: "Could not post status" };
     }
+
+
+    // add update to feed SQS
   };
 }

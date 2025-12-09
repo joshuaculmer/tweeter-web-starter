@@ -126,8 +126,8 @@ export class DynamoAuthDAO implements AuthDAO {
       first_name: firstName,
       last_name: lastName,
       image_url: imageUrl,
-      follower_count: "0",
-      followee_count: "0",
+      follower_count: 0,
+      followee_count: 0,
     };
 
     await this.client.send(
@@ -271,4 +271,5 @@ export class DynamoAuthDAO implements AuthDAO {
       return false;
     }
   };
+
 }

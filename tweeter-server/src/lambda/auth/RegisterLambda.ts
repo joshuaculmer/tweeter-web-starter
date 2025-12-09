@@ -2,7 +2,6 @@ import { AuthResponse } from "tweeter-shared";
 import { AuthService } from "../../model/service/AuthService";
 import { RegisterRequest } from "tweeter-shared/src/model/net/request/RegisterRequest";
 import { tryCatchWrapper } from "../LambdaHelper";
-import { FakeAuthDAO } from "../../model/dao/FakeDataDao/FakeAuthDAO";
 import { DynamoAuthDAO } from "../../model/dao/DynamoDao/DynamoAuthDAO";
 
 const authDao = new DynamoAuthDAO();

@@ -595,22 +595,43 @@ Resources:
             Path: /status/loadmorestoryitems
             Method: POST # Keep all of them POST
 
+  PostStatus:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PostStatus
+      Handler: lambda/status/PostStatusLambda.handler
+      Policies: *commonPolicies
+      Environment:
+        Variables:
+          POST_STATUS_QUEUE_URL: !Ref postStatusQueue
+      Events:
+        PostApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref tweeterApi
+            Path: /status/post
+            Method: POST
+
+  PostUpdateFeedMessages:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PostUpdateFeedMessages
+      Handler: lambda/sqs/PostUpdateFeedMessagesLambda.handler
+      Policies: *commonPolicies
+      Environment:
+        Variables:
+          UPDATE_FEED_QUEUE_URL: !Ref updateFeedQueue
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt postStatusQueue.Arn
+            BatchSize: 1
+            Enabled: true
+
   #
   # SQS Queue Lambda Functions
   #
-
-  # MyQueueFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: MyQueueFunction
-  #     Handler: <PATH TO LAMBDA HANDLER>
-  #     Policies: *commonPolicies
-  #     Events:
-  #       SQSTrigger:
-  #         Type: SQS
-  #         Properties:
-  #           Queue: !GetAtt MyQueue.Arn
-  #           Enabled: true
 
   #
   # DynamoDB Tables
@@ -711,3 +732,105 @@ Resources:
         WriteCapacityUnits: 5
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES 
+
+  FeedTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: feed
+      AttributeDefinitions:
+        - AttributeName: followee_alias
+          AttributeType: S
+        - AttributeName: timestamp
+          AttributeType: N
+      KeySchema:
+        - AttributeName: followee_alias
+          KeyType: HASH
+        - AttributeName: timestamp
+          KeyType: RANGE
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES 
+
+
+  #
+  # SQS Queues
+  #
+  
+  postStatusQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: postStatusQueue
+      VisibilityTimeout: 180  # 6x the Lambda timeout (30s)
+      MessageRetentionPeriod: 345600  # 4 days
+      ReceiveMessageWaitTimeSeconds: 0  # Short polling for immediate processing
+
+  updateFeedQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: updateFeedQueue
+      VisibilityTimeout: 180  # 6x the Lambda timeout (30s)
+      MessageRetentionPeriod: 345600  # 4 days
+      ReceiveMessageWaitTimeSeconds: 0  # Short polling
+
+  #
+  # SQS Queue Lambda Functions
+  #
+
+  PostUpdateFeedMessages:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: PostUpdateFeedMessages
+      Handler: lambda/sqs/PostUpdateFeedMessagesLambda.handler
+      Policies: *commonPolicies
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt postStatusQueue.Arn
+            BatchSize: 1  # Process one PostStatusRequest at a time
+            Enabled: true
+
+  UpdateFeed:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UpdateFeed
+      Handler: lambda/sqs/UpdateFeedLambda.handler
+      Policies: *commonPolicies
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt updateFeedQueue.Arn
+            BatchSize: 10  # Process up to 10 messages at once (each containing up to 25 usernames)
+            Enabled: true
+
+#
+# Add these outputs to help you reference the queue URLs in your code
+#
+Outputs:
+  PostStatusQueueUrl:
+    Description: URL of the postStatusQueue
+    Value: !Ref postStatusQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-PostStatusQueueUrl"
+
+  UpdateFeedQueueUrl:
+    Description: URL of the updateFeedQueue
+    Value: !Ref updateFeedQueue
+    Export:
+      Name: !Sub "${AWS::StackName}-UpdateFeedQueueUrl"
+
+  PostStatusQueueArn:
+    Description: ARN of the postStatusQueue
+    Value: !GetAtt postStatusQueue.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-PostStatusQueueArn"
+
+  UpdateFeedQueueArn:
+    Description: ARN of the updateFeedQueue
+    Value: !GetAtt updateFeedQueue.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-UpdateFeedQueueArn"

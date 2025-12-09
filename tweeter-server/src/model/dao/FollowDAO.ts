@@ -23,4 +23,8 @@ export interface FollowDAO extends DAO {
   GetFolloweeCount(alias: string): Promise<number>;
   Follow(token: string, userToFollow: UserDto): Promise<boolean>;
   Unfollow(token: string, userToFollow: UserDto): Promise<boolean>;
+  getFollowersUsernames(
+    username: string,
+    lastFollower: string | undefined
+  ): Promise<string[]>;
 }

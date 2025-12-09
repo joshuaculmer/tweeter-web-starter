@@ -143,6 +143,32 @@ export class DynamoFollowDAO implements FollowDAO {
     return [follows, hasMorePages];
   }
 
+  public getFollowersUsernames = async (
+    username: string,
+    lastFollower: string | undefined
+  ): Promise<string[]> => {
+    const followers: string[] = [];
+    do {
+      const [followerFollows, hasMore] = await this.queryFollows(
+        this.followeeAttr,
+        username,
+        this.followerAttr,
+        lastFollower,
+        100,
+        this.indexName
+      );
+      followers.push(...followerFollows.map((f) => f.follower_alias));
+      if (!followerFollows || followerFollows.length === 0) {
+        break;
+      } else {
+        lastFollower = hasMore
+          ? followerFollows[followerFollows.length - 1]?.follower_alias
+          : undefined;
+      }
+    } while (lastFollower);
+    return followers;
+  };
+
   async LoadMoreFollowers(
     token: string,
     userAlias: string,

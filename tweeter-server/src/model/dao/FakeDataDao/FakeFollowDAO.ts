@@ -57,4 +57,10 @@ export class FakeFollowDAO implements FollowDAO {
     await new Promise((f) => setTimeout(f, 500));
     return true;
   }
+  async getFollowersUsernames(
+    username: string,
+    lastFollower: string | undefined
+  ): Promise<string[]> {
+    return [];
+  }
 }

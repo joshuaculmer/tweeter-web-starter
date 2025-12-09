@@ -11,6 +11,7 @@ import { usernameByToken } from "./DynamoAuthDAO";
 
 export class DynamoStatusDAO implements StatusDAO {
   private statusTableName = "status";
+  private feedTableName = "feed";
   private authTokenTableName = "authtoken";
   private authTableName = "authentication";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -18,11 +19,58 @@ export class DynamoStatusDAO implements StatusDAO {
   private getStatusesByUser = async (
     userAlias: string,
     limit: number = 10,
+    tableName: string,
     lastItemTimestamp?: number
   ): Promise<{ statuses: StatusDto[]; lastItem?: StatusDto }> => {
     const params: any = {
-      TableName: this.statusTableName,
+      TableName: tableName,
       KeyConditionExpression: "user_alias = :alias",
+      ExpressionAttributeValues: {
+        ":alias": userAlias,
+      },
+      ScanIndexForward: false, // Most recent first
+      Limit: limit,
+    };
+
+    // Add pagination if lastItemTimestamp is provided
+    if (lastItemTimestamp !== undefined) {
+      params.ExclusiveStartKey = {
+        user_alias: userAlias,
+        timestamp: lastItemTimestamp,
+      };
+    }
+
+    const result = await this.client.send(new QueryCommand(params));
+
+    const statuses = (result.Items || []).map((item) => ({
+      post: item.post,
+      timestamp: item.timestamp,
+      user: {
+        firstName: item.user_firstName,
+        lastName: item.user_lastName,
+        alias: item.user_alias,
+        imageUrl: item.user_imageUrl,
+      },
+    }));
+
+    // Return the last item for pagination (only if exists)
+    if (statuses.length > 0) {
+      const lastItem = statuses[statuses.length - 1]!;
+      return { statuses, lastItem };
+    }
+
+    return { statuses };
+  };
+
+  private getFeedByUser = async (
+    userAlias: string,
+    limit: number = 10,
+    tableName: string,
+    lastItemTimestamp?: number
+  ): Promise<{ statuses: StatusDto[]; lastItem?: StatusDto }> => {
+    const params: any = {
+      TableName: tableName,
+      KeyConditionExpression: "followee_alias = :alias",
       ExpressionAttributeValues: {
         ":alias": userAlias,
       },
@@ -100,6 +148,7 @@ export class DynamoStatusDAO implements StatusDAO {
   private getStatusesByUsers = async (
     userAliases: string[],
     limitPerUser: number = 10,
+    tableName: string,
     lastItem?: StatusDto | number // Can pass lastItem, timestamp, or nothing
   ): Promise<{ statuses: StatusDto[]; lastItem?: StatusDto }> => {
     // Determine the timestamp to use for pagination
@@ -117,6 +166,7 @@ export class DynamoStatusDAO implements StatusDAO {
           result: await this.getStatusesByUser(
             alias,
             limitPerUser,
+            tableName,
             startTimestamp
           ),
         };
@@ -167,32 +217,13 @@ export class DynamoStatusDAO implements StatusDAO {
       throw new Error("Invalid auth token");
     }
 
-    // get list of followees
-    const followeesResult = await this.client.send(
-      new QueryCommand({
-        TableName: "follow",
-        KeyConditionExpression: "follower_alias = :alias",
-        ExpressionAttributeValues: {
-          ":alias": useralias,
-        },
-      })
-    );
-
-    // extract followee aliases
-    const followeeAliases: string[] = [];
-    if (followeesResult.Items) {
-      for (const item of followeesResult.Items) {
-        followeeAliases.push(item.followee_alias);
-      }
-    }
-
-    console.log("Followee Aliases:", followeeAliases);
-    // get status items associate with followees
+    // get feed items from feed table associated with user
     const itemsDto: StatusDto[] = [];
-    const { statuses, lastItem: newLastItem } = await this.getStatusesByUsers(
-      followeeAliases,
+    const { statuses, lastItem: newLastItem } = await this.getFeedByUser(
+      useralias,
       pageSize,
-      lastItem ? lastItem : undefined
+      this.feedTableName,
+      lastItem ? lastItem.timestamp : undefined
     );
     itemsDto.push(...statuses);
     // determine if there are more items by comparing pagesize to returned items
@@ -229,6 +260,7 @@ export class DynamoStatusDAO implements StatusDAO {
     const { statuses, lastItem: newLastItem } = await this.getStatusesByUser(
       useralias,
       pageSize,
+      this.statusTableName,
       lastItem ? lastItem.timestamp : undefined
     );
     itemsDto.push(...statuses);
