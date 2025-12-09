@@ -733,10 +733,10 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES 
 
-  FeedTable:
+  FeedTable3:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: feed
+      TableName: feed3
       AttributeDefinitions:
         - AttributeName: followee_alias
           AttributeType: S

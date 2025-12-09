@@ -7,7 +7,7 @@ import {
 
 const dynamoClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
-const FEED_TABLE_NAME = "feed";
+const FEED_TABLE_NAME = "feed3";
 
 export interface UpdateFeedMessage {
   usernames: string[];

@@ -11,7 +11,7 @@ import { usernameByToken } from "./DynamoAuthDAO";
 
 export class DynamoStatusDAO implements StatusDAO {
   private statusTableName = "status";
-  private feedTableName = "feed";
+  private feedTableName = "feed3";
   private authTokenTableName = "authtoken";
   private authTableName = "authentication";
   private client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
